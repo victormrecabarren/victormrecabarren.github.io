@@ -1,0 +1,46 @@
+body {
+  background-color: ivory;
+}
+
+* {
+  border: 1px solid red;
+}
+
+.board {
+  margin: 0 auto;
+  width: 100%
+}
+
+.container  {
+  margin: 0 auto;
+  min-width: 1000px;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stage {
+  min-height: 300px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+}
+
+
+.userForm {
+  width: 90%;
+  min-height: 50px;
+}
+
+.cardsContainer {
+  min-height: 300px;
+  width: 90%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.cards {
+  max-height: 250px;
+  min-width: 25%
+}
