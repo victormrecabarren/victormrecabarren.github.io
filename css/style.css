@@ -4,6 +4,7 @@ body {
 
 * {
   border: 1px solid red;
+  box-sizing: border-box;
 }
 
 .board {
@@ -42,5 +43,27 @@ body {
 
 .cards {
   max-height: 250px;
-  min-width: 25%
+  min-width: 25%;
+  background-color: white;
+}
+
+
+.fill {
+  height: 100%;
+  width: 100%;
+  background-image: url('http://source.unsplash.com/random/224x250');
+  cursor: pointer;
+}
+
+.hold {
+  border: solid gray 4px;
+}
+
+.hovered {
+  background: #f4f4f4;
+  border: 2px black dashed;
+}
+
+.invisible {
+  display: none;
 }
