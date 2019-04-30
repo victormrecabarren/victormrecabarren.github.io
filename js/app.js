@@ -9,7 +9,7 @@ const hash = `81f0138cb4590bc6deaacb6e4db98c31`
 let queryType = `name=`
 
 // name that will be decided by user
-let characterName = 'Spider-Man';
+// let characterName = 'black panther';
 
 //  hash must = `md5 of ts+privateKey+apiKey`
 
@@ -27,8 +27,6 @@ let dropped;
 
 $(() => {
 
-
-
   const getCharacter = (hero) => {
     $.ajax({
           url: queryURL + hero
@@ -38,8 +36,18 @@ $(() => {
       })
     }
 
+$('form').on('submit', (event) => {
+  event.preventDefault();
+  // event.trigger('reset');
+  const myCharacter = $('#textbox').val();
+  getCharacter(myCharacter);
 
-  getCharacter('Spider-Man')
+})
+
+
+
+
+
 
 
 

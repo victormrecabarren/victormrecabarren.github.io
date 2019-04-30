@@ -34,6 +34,16 @@ body {
   min-height: 50px;
 }
 
+form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#textbox {
+  min-width: 50%;
+}
+
 .cardsContainer {
   min-height: 300px;
   width: 90%;
