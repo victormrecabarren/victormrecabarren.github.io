@@ -11,6 +11,8 @@ $(() => {
   ///// drag functions
   const dragStart = (event) => {
     if (event.target !== event.currentTarget) {
+      $('#compareSlot1').css('background', 'lightblue');
+      $('#compareSlot2').css('background', 'lightblue')
       // add a class to show card is being held onto
       $(event.target).addClass('hold');
       // make the card invisible in its original slot, but wait a little
@@ -23,6 +25,9 @@ $(() => {
 
       // set pickedUpFrom to the parent of where you took the div from
       pickedUpFrom = $(event.target).parent().attr('id');
+
+      // make stage slots glow to indicate to user to go drag there
+
     }
   }
 
@@ -53,6 +58,8 @@ $(() => {
     /// also set dropped to true to prevent dragEnd from putting
     /// item back into its original slot
     if (event.target.classList.contains('slots')) {
+      $('#compareSlot1').css('background', 'white');
+      $('#compareSlot2').css('background', 'white')
       $(event.target).removeClass('hovered');
       $(event.target).append($(`#${heldItem}`).attr('class', 'fill'));
       dropped = true;
@@ -62,6 +69,8 @@ $(() => {
 
   const dragEnd = (event) => {
     if (event.target !== event.currentTarget) {
+      $('#compareSlot1').css('background', 'white');
+      $('#compareSlot2').css('background', 'white');
       /// check if dropped is true, then change it to false and stop
       if (dropped === true) {
         dropped = false;
