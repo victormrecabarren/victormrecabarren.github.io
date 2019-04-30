@@ -31,6 +31,7 @@ $(() => {
     $.ajax({
           url: queryURL + hero
         }).then((data) => {
+          console.log(data);
           // get thumbnail img
         const imgSrc = (data.data.results[0].thumbnail.path +`.`+ data.data.results[0].thumbnail.extension);
         // apply as bg of card
