@@ -51,7 +51,6 @@ body {
 .fill {
   height: 100%;
   width: 100%;
-  background-image: url('http://source.unsplash.com/random/224x250');
   cursor: pointer;
 }
 
@@ -66,4 +65,12 @@ body {
 
 .invisible {
   display: none;
+}
+
+#pic1 {
+  background-image: url('http://source.unsplash.com/random/224x250');
+}
+#pic2 {
+  background-image: url('http://source.unsplash.com/random/225x250');
+
 }

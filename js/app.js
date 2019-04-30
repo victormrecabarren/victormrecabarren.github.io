@@ -53,6 +53,7 @@ $(() => {
     /// also set dropped to true to prevent dragEnd from putting
     /// item back into its original slot
     if (event.target.classList.contains('slots')) {
+      $(event.target).removeClass('hovered');
       $(event.target).append($(`#${heldItem}`).attr('class', 'fill'));
       dropped = true;
     }
