@@ -2,10 +2,10 @@ body {
   background-color: ivory;
 }
 
-* {
+/* * {
   border: 1px solid red;
   box-sizing: border-box;
-}
+} */
 
 .board {
   margin: 0 auto;
@@ -45,6 +45,7 @@ body {
   max-height: 250px;
   min-width: 25%;
   background-color: white;
+  border: 1px black solid;
 }
 
 
@@ -52,6 +53,9 @@ body {
   height: 100%;
   width: 100%;
   cursor: pointer;
+  background-size: 120%;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .hold {
@@ -59,18 +63,15 @@ body {
 }
 
 .hovered {
-  background: #f4f4f4;
-  border: 2px black dashed;
+  background: yellow;
+  border: 2px crimson solid;
+}
+
+.stageHovered {
+  background: darkblue;
+  border: 2px crimson solid;
 }
 
 .invisible {
   display: none;
-}
-
-#pic1 {
-  background-image: url('http://source.unsplash.com/random/224x250');
-}
-#pic2 {
-  background-image: url('http://source.unsplash.com/random/225x250');
-
 }
