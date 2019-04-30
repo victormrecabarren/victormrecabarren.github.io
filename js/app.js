@@ -6,7 +6,7 @@ const apiKey = `apikey=012c4351d4aecfb2c181fd0b1977192d`;
 const privateKey = `4ed1801c49dd47d9034022152101a0959db7b215
 `;
 const hash = `81f0138cb4590bc6deaacb6e4db98c31`
-let queryType = `name=`
+let queryType = `nameStartsWith=`
 
 // name that will be decided by user
 // let characterName = 'black panther';
@@ -31,16 +31,28 @@ $(() => {
     $.ajax({
           url: queryURL + hero
         }).then((data) => {
+          // get thumbnail img
         const imgSrc = (data.data.results[0].thumbnail.path +`.`+ data.data.results[0].thumbnail.extension);
-        $('#card1').css('background-image', `url('${imgSrc}')`)
+        // apply as bg of card
+        if ($('#card1').css('background-image') === 'none') {
+          $('#card1').css('background-image', `url('${imgSrc}')`)
+        } else if ($('#card2').css('background-image') === 'none') {
+          $('#card2').css('background-image', `url('${imgSrc}')`)
+        } else if ($('#card3').css('background-image') === 'none') {
+          $('#card3').css('background-image', `url('${imgSrc}')`)
+        } else {
+          console.log('cards filled!')
+        }
       })
     }
 
+
+
 $('form').on('submit', (event) => {
   event.preventDefault();
-  // event.trigger('reset');
   const myCharacter = $('#textbox').val();
   getCharacter(myCharacter);
+  $(event.currentTarget).trigger('reset');
 
 })
 
