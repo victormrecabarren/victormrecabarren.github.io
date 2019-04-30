@@ -41,7 +41,7 @@ body {
   justify-content: space-around;
 }
 
-.cards {
+.slots {
   max-height: 250px;
   min-width: 25%;
   background-color: white;
