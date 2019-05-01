@@ -43,6 +43,12 @@ $(() => {
           $('#drawSlot2').append($('<div>').addClass('card').attr({'id': 'card2', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
         } else if ($('#drawSlot3').children().length === 0) {
           $('#drawSlot3').append($('<div>').addClass('card').attr({'id': 'card3', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+        } else if ($('#drawSlot4').children().length === 0) {
+          $('#drawSlot4').append($('<div>').addClass('card').attr({'id': 'card4', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+        } else if ($('#drawSlot5').children().length === 0) {
+          $('#drawSlot5').append($('<div>').addClass('card').attr({'id': 'card5', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+        } else if ($('#drawSlot6').children().length === 0) {
+          $('#drawSlot6').append($('<div>').addClass('card').attr({'id': 'card6', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
         } else {
           console.log('cards filled!')
         }
@@ -52,7 +58,7 @@ $(() => {
 
 ///// functions to give delete card option
 
-  const deleteButton = $('<div>').addClass('deleteButton')
+  const deleteButton = $('<div>').addClass('deleteButton').append('&times;')
   const showDelete = (event) => {
     if (event.target !== event.currentTarget) {
       $(event.currentTarget).children().eq(0).append(deleteButton);
@@ -66,20 +72,18 @@ $(() => {
   }
 
   const deleteResponse = (event) => {
-    if ($(event.target).attr('class') === 'deleteButton') {
-      $(event.target).text('X')
-    } else {
-      $('div[class="deleteButton"]').text('')
-    }
+    // if ($(event.target).attr('class') === 'deleteButton') {
+    //   $(event.target).append('&times;')
+    // } else {
+    //   $('div[class="deleteButton"]').text('')
+    // }
   }
 
 
   const removeCard = () => {
-
     if ($(event.target).attr('class') === 'deleteButton') {
       $(event.target).parent().remove()
     }
-
   }
 
 

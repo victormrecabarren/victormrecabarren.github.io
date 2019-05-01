@@ -1,5 +1,5 @@
 body {
-  background-color: ivory;
+  background-color: darkgray;
 }
 
 
@@ -40,7 +40,14 @@ form {
   min-width: 50%;
 }
 
-.cardsContainer {
+.cardsContainer1 {
+  min-height: 300px;
+  width: 90%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.cardsContainer2{
   min-height: 300px;
   width: 90%;
   display: flex;
@@ -52,6 +59,7 @@ form {
   min-width: 25%;
   background-color: white;
   /* border: 1px black solid; */
+  border-radius: 10px
 }
 
 
@@ -62,6 +70,11 @@ form {
   background-size: 120%;
   background-position: center;
   background-repeat: no-repeat;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+
 }
 
 .hold {
@@ -83,11 +96,17 @@ form {
 }
 
 .deleteButton {
-  height: 20px;
-  width: 20px;
-  background-color: red;
+  height: 10%;
+  width: 20%;
+  background-color: dodgerblue;
   color: black;
   font-size: 20px;
   text-align: center;
   font-family: sans-serif;
+  border: 2px solid royalblue;
+  border-radius: 100px;
+}
+
+.deleteButton:hover {
+  background-color: darkred;
 }
