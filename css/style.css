@@ -2,10 +2,6 @@ body {
   background-color: ivory;
 }
 
-/* * {
-  border: 1px solid red;
-  box-sizing: border-box;
-} */
 
 .board {
   margin: 0 auto;
@@ -59,7 +55,7 @@ form {
 }
 
 
-.fill {
+.card {
   height: 100%;
   width: 100%;
   cursor: pointer;
@@ -84,4 +80,14 @@ form {
 
 .invisible {
   display: none;
+}
+
+.deleteButton {
+  height: 20px;
+  width: 20px;
+  background-color: red;
+  color: black;
+  font-size: 20px;
+  text-align: center;
+  font-family: sans-serif;
 }
