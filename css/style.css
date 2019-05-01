@@ -51,7 +51,7 @@ form {
   max-height: 250px;
   min-width: 25%;
   background-color: white;
-  border: 1px black solid;
+  /* border: 1px black solid; */
 }
 
 
