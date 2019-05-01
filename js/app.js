@@ -56,8 +56,6 @@ $(() => {
   const showDelete = (event) => {
     if (event.target !== event.currentTarget) {
       $(event.currentTarget).children().eq(0).append(deleteButton);
-    } else {
-      console.log('no card here');
     }
   }
 
