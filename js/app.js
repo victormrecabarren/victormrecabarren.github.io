@@ -75,17 +75,22 @@ $(() => {
 
 ///// functions to give delete card option
 
-  const deleteButton = $('<div>').addClass('deleteButton').append('&times;')
+  const deleteButton = $('<div>').addClass('deleteButton').append('&times;');
+  const dragMe = $('<div>').addClass('dragMe');
+
   const showDelete = (event) => {
     if (event.target === event.currentTarget) {
       $(event.target).append(deleteButton);
+      $(event.target).prepend(dragMe);
+
       $(event.target).addClass('glow');
     }
   }
 
   const removeDelete = (event) => {
     if (event.target === event.currentTarget) {
-      $('div[class="deleteButton"]').remove()
+      $('div[class="deleteButton"]').remove();
+      $('div[class="dragMe"]').remove()
     }
   }
 
