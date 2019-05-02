@@ -41,21 +41,37 @@ $(() => {
         console.log(description);
 
         // create and append card to available slot
-        if ($('#drawSlot1').children().length === 0) {
-          $('#drawSlot1').append($('<div>').addClass('card').attr({'id': 'card1', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`))
-        } else if ($('#drawSlot2').children().length === 0) {
-          $('#drawSlot2').append($('<div>').addClass('card').attr({'id': 'card2', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
-        } else if ($('#drawSlot3').children().length === 0) {
-          $('#drawSlot3').append($('<div>').addClass('card').attr({'id': 'card3', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
-        } else if ($('#drawSlot4').children().length === 0) {
-          $('#drawSlot4').append($('<div>').addClass('card').attr({'id': 'card4', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
-        } else if ($('#drawSlot5').children().length === 0) {
-          $('#drawSlot5').append($('<div>').addClass('card').attr({'id': 'card5', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
-        } else if ($('#drawSlot6').children().length === 0) {
-          $('#drawSlot6').append($('<div>').addClass('card').attr({'id': 'card6', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
-        } else {
-          console.log('cards filled!')
+        // if ($('#drawSlot1').children().length === 0) {
+        //   $('#drawSlot1').append($('<div>').addClass('card').attr({'id': 'card1', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`))
+        // } else if ($('#drawSlot2').children().length === 0) {
+        //   $('#drawSlot2').append($('<div>').addClass('card').attr({'id': 'card2', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+        // } else if ($('#drawSlot3').children().length === 0) {
+        //   $('#drawSlot3').append($('<div>').addClass('card').attr({'id': 'card3', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+        // } else if ($('#drawSlot4').children().length === 0) {
+        //   $('#drawSlot4').append($('<div>').addClass('card').attr({'id': 'card4', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+        // } else if ($('#drawSlot5').children().length === 0) {
+        //   $('#drawSlot5').append($('<div>').addClass('card').attr({'id': 'card5', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+        // } else if ($('#drawSlot6').children().length === 0) {
+        //   $('#drawSlot6').append($('<div>').addClass('card').attr({'id': 'card6', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+        // } else {
+        //   console.log('cards filled!')
+        // }
+
+
+
+        for (let i= 2; i < $('.slots').length; i++) {
+          if ($('.slots').eq(i).children().length === 0) {
+            $(`#drawSlot${i-1}`).append($('<div>').addClass('card').attr({'id': `card${i-1}`, 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+            return
+          } else {
+            console.log('cards filled');
+          }
         }
+
+
+
+
+
       })
     }
 
