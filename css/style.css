@@ -41,25 +41,28 @@ form {
 }
 
 .cardsContainer1 {
+  margin: 0 auto;
   min-height: 300px;
   width: 90%;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  flex-flow: row wrap;
 }
 
-.cardsContainer2{
+/* .cardsContainer2{
   min-height: 300px;
   width: 90%;
   display: flex;
-  justify-content: space-around;
-}
+  justify-content: space-between;
+} */
 
 .slots {
-  max-height: 250px;
+  margin: 20px;
+  min-height: 230px;
   min-width: 25%;
   background-color: white;
   /* border: 1px black solid; */
-  border-radius: 10px
+  border-radius: 10px;
 }
 
 
@@ -67,6 +70,7 @@ form {
   height: 100%;
   width: 100%;
   cursor: pointer;
+  box-sizing: border-box;
   background-size: 120%;
   background-position: center;
   background-repeat: no-repeat;
@@ -78,12 +82,13 @@ form {
 }
 
 .hold {
-  border: solid gray 4px;
+  /* border: solid gray 4px; */
 }
 
 .hovered {
   background: yellow;
   border: 2px crimson solid;
+  box-sizing: border-box;
 }
 
 .stageHovered {
@@ -109,4 +114,8 @@ form {
 
 .deleteButton:hover {
   background-color: darkred;
+}
+
+.glow:hover {
+  box-shadow: 0px 0px 40px 20px gold;
 }

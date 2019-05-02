@@ -1,3 +1,5 @@
+
+
 ///// establishing query url for ajax
 
 const baseURL = `https://gateway.marvel.com:443/v1/public/characters?`;
@@ -62,6 +64,7 @@ $(() => {
   const showDelete = (event) => {
     if (event.target !== event.currentTarget) {
       $(event.currentTarget).children().eq(0).append(deleteButton);
+      $(event.target).addClass('glow');
     }
   }
 
@@ -106,8 +109,8 @@ $(() => {
   const dragStart = (event) => {
     if (event.target !== event.currentTarget) {
       //change stage slots to indicate dropzone
-      $('#compareSlot1').css('background', 'lightblue').css('border', '2px dashed black');
-      $('#compareSlot2').css('background', 'lightblue').css('border', '2px dashed black');
+      $('#compareSlot1').css('background', 'lightblue').css('border', '2px dashed black').css('box-sizing', 'border-box');
+      $('#compareSlot2').css('background', 'lightblue').css('border', '2px dashed black').css('box-sizing', 'border-box');
       // add a class to show card is being held onto
       $(event.target).addClass('hold');
       // make the card invisible in its original slot, but wait a little
@@ -128,13 +131,10 @@ $(() => {
 
   const dragEnter = () => {
     //check if slot is occupied
-    if ($(event.target).attr('class') !== 'card') {
+    console.log($(event.target).attr('class'));
+    if (!event.target.classList.contains('card')) {
       // give the slot a new class to show its being hovered over
-      if ($(event.target).parent() === 'stage') {
-        $(event.target).addClass('stageHovered');
-      } else {
         $(event.target).addClass('hovered');
-      }
     }
   }
 
@@ -145,7 +145,7 @@ $(() => {
 
   const dragLeave = () => {
     //check if slot is occupied
-    if ($(event.target).attr('class') !== 'card') {
+    if (!event.target.classList.contains('card')) {
       /// set card slot class back to normal
       $(event.target).attr('class', 'slots')
     }
@@ -158,9 +158,9 @@ $(() => {
     /// item back into its original slot
     if (event.target.classList.contains('slots')) {
       //revert stage slots back to normal
-      $('#compareSlot1').css('background', 'white').css('border', '1px black solid');
-      $('#compareSlot2').css('background', 'white').css('border', '1px black solid')
-      $(event.target).removeClass('hovered');
+      $('#compareSlot1').css('background', 'white').css('border', 'none');
+      $('#compareSlot2').css('background', 'white').css('border', 'none');
+      $(event.target).attr('class', 'slots');
       $(event.target).append($(`#${heldItem}`).attr('class', 'card'));
       dropped = true;
     }
@@ -170,8 +170,8 @@ $(() => {
   const dragEnd = (event) => {
     if (event.target !== event.currentTarget) {
       // revert stage slots back to normal
-      $('#compareSlot1').css('background', 'white').css('border', '1px black solid');
-      $('#compareSlot2').css('background', 'white').css('border', '1px black solid');
+      $('#compareSlot1').css('background', 'white').css('border', 'none');
+      $('#compareSlot2').css('background', 'white').css('border', 'none');
       /// check if dropped is true, then change it to false and stop
       if (dropped === true) {
         dropped = false;
@@ -204,7 +204,7 @@ $(() => {
     $slots.eq(i).on('dragleave', dragLeave);
     $slots.eq(i).on('drop', dragDrop);
     // the callback function on these will run when event.target is
-    // NOT currentTarget. in other words, will work with card not slot
+    // NOT currentTarget. in other words, will work with card, not slot
     $slots.eq(i).on('dragstart', dragStart);
     $slots.eq(i).on('dragend', dragEnd);
         // show and remove delete button
