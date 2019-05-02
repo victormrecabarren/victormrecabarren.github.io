@@ -37,10 +37,12 @@ $(() => {
           console.log(data);
           // get thumbnail img
         const imgSrc = (data.data.results[0].thumbnail.path +`.`+ data.data.results[0].thumbnail.extension);
+        const description = (data.data.results[0].description);
+        console.log(description);
 
         // create and append card to available slot
         if ($('#drawSlot1').children().length === 0) {
-          $('#drawSlot1').append($('<div>').addClass('card').attr({'id': 'card1', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+          $('#drawSlot1').append($('<div>').addClass('card').attr({'id': 'card1', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`))
         } else if ($('#drawSlot2').children().length === 0) {
           $('#drawSlot2').append($('<div>').addClass('card').attr({'id': 'card2', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
         } else if ($('#drawSlot3').children().length === 0) {
@@ -131,7 +133,6 @@ $(() => {
 
   const dragEnter = () => {
     //check if slot is occupied
-    console.log($(event.target).attr('class'));
     if (!event.target.classList.contains('card')) {
       // give the slot a new class to show its being hovered over
         $(event.target).addClass('hovered');
