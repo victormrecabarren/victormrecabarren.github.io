@@ -40,28 +40,26 @@ $(() => {
         const description = (data.data.results[0].description);
         console.log(description);
 
-        // create and append card to available slot
-        // if ($('#drawSlot1').children().length === 0) {
-        //   $('#drawSlot1').append($('<div>').addClass('card').attr({'id': 'card1', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`))
-        // } else if ($('#drawSlot2').children().length === 0) {
-        //   $('#drawSlot2').append($('<div>').addClass('card').attr({'id': 'card2', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
-        // } else if ($('#drawSlot3').children().length === 0) {
-        //   $('#drawSlot3').append($('<div>').addClass('card').attr({'id': 'card3', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
-        // } else if ($('#drawSlot4').children().length === 0) {
-        //   $('#drawSlot4').append($('<div>').addClass('card').attr({'id': 'card4', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
-        // } else if ($('#drawSlot5').children().length === 0) {
-        //   $('#drawSlot5').append($('<div>').addClass('card').attr({'id': 'card5', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
-        // } else if ($('#drawSlot6').children().length === 0) {
-        //   $('#drawSlot6').append($('<div>').addClass('card').attr({'id': 'card6', 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
-        // } else {
-        //   console.log('cards filled!')
-        // }
-
-
+        // check for available slots, then append to first avail
 
         for (let i= 2; i < $('.slots').length; i++) {
           if ($('.slots').eq(i).children().length === 0) {
-            $(`#drawSlot${i-1}`).append($('<div>').addClass('card').attr({'id': `card${i-1}`, 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`));
+            //// create card
+            const newCard = $('<div>').addClass('card').attr({'id': `card${i-1}`, 'draggable': 'true'}).css('background-image', `url('${imgSrc}')`);
+
+            ///// append card to correct slot
+
+            //// add listeners to new card
+            newCard.on('dragstart', dragStart);
+            newCard.on('dragend', dragEnd);
+            newCard.hover(showDelete, removeDelete);
+            newCard.mouseover(deleteResponse);
+            newCard.on('click', removeCard);
+
+            $(`#drawSlot${i-1}`).append(newCard);
+
+
+
             return
           } else {
             console.log('cards filled');
@@ -80,14 +78,14 @@ $(() => {
 
   const deleteButton = $('<div>').addClass('deleteButton').append('&times;')
   const showDelete = (event) => {
-    if (event.target !== event.currentTarget) {
-      $(event.currentTarget).children().eq(0).append(deleteButton);
+    if (event.target === event.currentTarget) {
+      $(event.target).append(deleteButton);
       $(event.target).addClass('glow');
     }
   }
 
   const removeDelete = (event) => {
-    if (event.target !== event.currentTarget) {
+    if (event.target === event.currentTarget) {
       $('div[class="deleteButton"]').remove()
     }
   }
@@ -125,7 +123,7 @@ $(() => {
 
   ///// drag functions
   const dragStart = (event) => {
-    if (event.target !== event.currentTarget) {
+    if (event.target === event.currentTarget) {
       //change stage slots to indicate dropzone
       $('#compareSlot1').css('background', 'lightblue').css('border', '2px dashed black').css('box-sizing', 'border-box');
       $('#compareSlot2').css('background', 'lightblue').css('border', '2px dashed black').css('box-sizing', 'border-box');
@@ -185,7 +183,7 @@ $(() => {
 
 
   const dragEnd = (event) => {
-    if (event.target !== event.currentTarget) {
+    if (event.target === event.currentTarget) {
       // revert stage slots back to normal
       $('#compareSlot1').css('background', 'white').css('border', 'none');
       $('#compareSlot2').css('background', 'white').css('border', 'none');
@@ -220,22 +218,23 @@ $(() => {
     $slots.eq(i).on('dragenter', dragEnter);
     $slots.eq(i).on('dragleave', dragLeave);
     $slots.eq(i).on('drop', dragDrop);
+
     // the callback function on these will run when event.target is
     // NOT currentTarget. in other words, will work with card, not slot
-    $slots.eq(i).on('dragstart', dragStart);
-    $slots.eq(i).on('dragend', dragEnd);
-        // show and remove delete button
-    $slots.eq(i).hover(showDelete, removeDelete)
+  //   $slots.eq(i).on('dragstart', dragStart);
+  //   $slots.eq(i).on('dragend', dragEnd);
+  //       // show and remove delete button
+  //   $slots.eq(i).hover(showDelete, removeDelete)
+  //
+  //       // listener that will respond to hovering over delete btn
+  //   $slots.eq(i).mouseover(deleteResponse)
+  //
+  //       // listener that will respond to clicking delete btn and
+  //       // delete card
+  //   $slots.eq(i).on('click', removeCard)
+  //
+  // }
 
-        // listener that will respond to hovering over delete btn
-    $slots.eq(i).mouseover(deleteResponse)
-
-        // listener that will respond to clicking delete btn and
-        // delete card
-    $slots.eq(i).on('click', removeCard)
-
-  }
-
-
+}
 
 })
