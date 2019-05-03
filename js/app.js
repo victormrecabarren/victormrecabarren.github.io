@@ -45,17 +45,23 @@ $(() => {
         for (let i= 2; i < $('.slots').length; i++) {
           if ($('.slots').eq(i).children().length === 0) {
             //// create card
-            const newCard = $('<div>').addClass('card').attr('draggable', 'true').css('background-image', `url('${imgSrc}')`);
+            const $newCard = $('<div>').addClass('card').attr('draggable', 'true');
+
+            const $cardPic = $('<div>').css('background-image', `url('${imgSrc}')`).addClass('cardPic');
+
+            const $cardInfo = $('<p>').attr('class', 'cardInfo').text(`${description}`);
+
+            $newCard.append($cardPic).append($cardInfo)
 
             ///// append card to correct slot
 
             //// add listeners to new card
-            newCard.on('dragstart', dragStart);
-            newCard.on('dragend', dragEnd);
-            newCard.hover(showDelete, removeDelete);
-            newCard.on('click', removeCard);
+            $newCard.on('dragstart', dragStart);
+            $newCard.on('dragend', dragEnd);
+            $newCard.hover(showDelete, removeDelete);
+            $newCard.on('click', removeCard);
 
-            $(`#drawSlot${i-1}`).append(newCard);
+            $(`#drawSlot${i-1}`).append($newCard);
 
             if ($('.card').length > 1) {
               $('#compareSlot1').addClass('stageAppear')
@@ -85,22 +91,19 @@ $(() => {
   const dragMe = $('<div>').addClass('dragMe');
 
   const showDelete = (event) => {
-    if (event.target === event.currentTarget) {
-      $(event.target).append(deleteButton);
-      console.log($(event.target).parent().parent().attr('class'));
-      if ($(event.target).parent().parent().attr('class') !== 'stage') {
-        $(event.target).prepend(dragMe);
+
+      $(event.currentTarget).append(deleteButton);
+      if ($(event.currentTarget).parent().parent().attr('class') !== 'stage') {
+        // $(event.target).prepend(dragMe);
       }
 
-      $(event.target).addClass('glow');
-    }
+      $(event.currentTarget).addClass('glow');
+
   }
 
   const removeDelete = (event) => {
-    if (event.target === event.currentTarget) {
       $('div[class="deleteButton"]').remove();
-      $('div[class="dragMe"]').remove()
-    }
+      // $('div[class="dragMe"]').remove()
   }
 
 
@@ -130,33 +133,33 @@ $(() => {
 
   ///// drag functions
   const dragStart = (event) => {
-    if (event.target === event.currentTarget) {
       //change stage slots to indicate dropzone
       $('#compareSlot1').addClass('stageGlow')
       $('#compareSlot2').addClass('stageGlow');
       // add a class to show card is being held onto
-      $(event.target).addClass('hold');
+      $(event.currentTarget).addClass('hold');
       // make the card invisible in its original slot, but wait a little
       // so that you can still "hold" onto the item
       setTimeout(() => {
-        $(event.target).attr('class', 'invisible')
+        $(event.currentTarget).attr('class', 'invisible')
       }, 1);
-      // change heldItem to id of item we are holding
-      $heldItem = $(event.target);
+      // change heldItem to  item we are holding
+      $heldItem = $(event.currentTarget);
       // console.log($heldItem);
 
       // set pickedUpFrom to the parent of where you took the div from
-      pickedUpFrom = $(event.target).parent().attr('id');
+      pickedUpFrom = $(event.currentTarget).parent().attr('id');
       console.log(pickedUpFrom);
+
 
       // make stage slots glow to indicate to user to go drag there
 
-    }
   }
 
+/////// drag enter elements, setting hover to elements, need to set to card not event.
   const dragEnter = () => {
     //check if slot is occupied
-    if (!event.target.classList.contains('card')) {
+    if (!$(event.target).parents('div.slots').length) {
       // give the slot a new class to show its being hovered over
         $(event.target).addClass('hovered');
     }
@@ -169,7 +172,7 @@ $(() => {
 
   const dragLeave = () => {
     //check if slot is occupied
-    if (!event.target.classList.contains('card')) {
+    if (!$(event.target).parents('div.slots').length) {
       /// set card slot class back to normal
       $(event.target).attr('class', 'slots')
     }
@@ -196,7 +199,6 @@ $(() => {
 
 
   const dragEnd = (event) => {
-    if (event.target === event.currentTarget) {
       // revert stage slots back to normal if less than 2 cards on board
       if ($('.card').length < 2) {
       $('#compareSlot1').attr('class', 'slots')
@@ -217,7 +219,7 @@ $(() => {
           $('#compareSlot2').attr('class', 'slots stageAppear');
         }
       $(`#${pickedUpFrom}`).append($(event.target));
-    }
+
 
 }
 
