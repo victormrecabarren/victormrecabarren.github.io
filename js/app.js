@@ -25,6 +25,9 @@ let queryURL = baseURL + `ts=`+ ts + `&` + apiKey + `&` + `hash=` + hash + `&` +
 
 //// global variable to keep track of dragged node
 let dropped;
+/// global variable to get 'events' and 'comics' data of API out of function
+
+let
 
 // function that will make call to API
 
@@ -38,7 +41,6 @@ $(() => {
           // get thumbnail img
         const imgSrc = (data.data.results[0].thumbnail.path +`.`+ data.data.results[0].thumbnail.extension);
         const description = (data.data.results[0].description);
-        console.log(description);
 
         // check for available slots, then append to first avail
 
@@ -87,11 +89,25 @@ $(() => {
 
   /////// function that will compare selected cards
   const compareCharacters = () => {
+    /// check if stage is filled
     if ($('#compareSlot1').children().length && $('#compareSlot2').children().length) {
+
+      // change slot classes
       console.log('compare slots full');
       $('#compareSlot1').attr('class', 'slots slotsWhenStageActivated');
       $('#compareSlot2').attr('class', 'slots slotsWhenStageActivated');
+      /// append a new div
+      $('<div>').attr('id', 'compareDiv').addClass('invisible').insertAfter($('#compareSlot1'));
+      setTimeout(() => {
+        $('#compareDiv').attr('class', 'compareDiv')
+      }, 3000)
+
+      /// add API info
+      $('#compareDiv').append($('<p>').text('stuff'));
+
+
     } else {
+      /// if stage not full, return slots to normal (undo glow)
       $('#compareSlot1').attr('class', 'slots ');
       $('#compareSlot2').attr('class', 'slots ');
       return

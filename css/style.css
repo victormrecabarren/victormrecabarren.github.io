@@ -108,6 +108,15 @@ form {
 
 }
 
+.compareDiv {
+  min-height: 20%;
+  min-width: 20%;
+  background: red;
+  position: absolute;
+  align-self: center;
+  transition: min-width 2s;
+}
+
 
 .card {
   height: 100%;
