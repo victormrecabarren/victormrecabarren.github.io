@@ -12,10 +12,6 @@ body {
   left: calc(50% - 455px); */
   background: radial-gradient(#222, violet);
   background-attachment: fixed;
-  margin: 0 auto;
-  text-align: center;
-  white-space: nowrap;
-  font-size: 0;
 }
 
 .stageGlow {
@@ -27,7 +23,7 @@ body {
 
 .stageAppear {
   border: 3px solid white;
-  transition: border 2s ease-out;
+  box-sizing: border-box;
 
 }
 
@@ -92,6 +88,7 @@ form {
   margin: 20px;
   min-height: 280px;
   min-width: 25%;
+  max-width: 25%;
   background-color: transparent;
   /* border: 1px black solid; */
   border-radius: 10px;
@@ -105,20 +102,22 @@ form {
   cursor: pointer;
   box-sizing: border-box;
   background-size: 100%;
+  background-color: white;
   /* background-image: url(); */
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 10px;
   /* display: flex;
-  flex-direction: row;
-  justify-content: flex-end; */
+  flex-direction: row; */
+
+
+
+
 
 }
 
 .hold {
-  border-radius: 50%;
-  background-color: transparent;
-  box-shadow: 0 0 140px 90px #0ff;
+
 }
 
 .hovered {
@@ -161,9 +160,17 @@ form {
 }
 
 .cardPic {
-  height: 80px;
-  width: 80px;
-  float: left;
+  height: 100px;
+  width: 100px;
+  margin: 0 auto;
+  /* float: left; */
+  border-radius: 10%;
   background-position: center;
   background-size: 100%;
+}
+
+
+
+.cardInfo {
+  margin: 0 auto;
 }

@@ -49,7 +49,7 @@ $(() => {
 
             const $cardPic = $('<div>').css('background-image', `url('${imgSrc}')`).addClass('cardPic');
 
-            const $cardInfo = $('<p>').attr('class', 'cardInfo').text(`${description}`);
+            const $cardInfo = $('<p>').attr('class', 'cardInfo').append(`${description}`);
 
             $newCard.append($cardPic).append($cardInfo)
 
@@ -88,13 +88,11 @@ $(() => {
 ///// functions to give delete card option
 
   const deleteButton = $('<div>').addClass('deleteButton').append('&times;');
-  const dragMe = $('<div>').addClass('dragMe');
 
   const showDelete = (event) => {
 
-      $(event.currentTarget).append(deleteButton);
+      $(event.currentTarget).prepend(deleteButton);
       if ($(event.currentTarget).parent().parent().attr('class') !== 'stage') {
-        // $(event.target).prepend(dragMe);
       }
 
       $(event.currentTarget).addClass('glow');
@@ -103,7 +101,6 @@ $(() => {
 
   const removeDelete = (event) => {
       $('div[class="deleteButton"]').remove();
-      // $('div[class="dragMe"]').remove()
   }
 
 
@@ -229,7 +226,11 @@ $(() => {
 // input
   $('form').on('submit', (event) => {
     event.preventDefault();
-    const myCharacter = $('#textbox').val();
+    let myCharacter = $('#textbox').val();
+    /// correct spelling of spiderman to fit API 
+    if (myCharacter === 'spiderman' || myCharacter === 'Spiderman' || myCharacter === 'spider man' || myCharacter === 'Spider man') {
+      myCharacter = 'spider-man'
+    }
     getCharacter(myCharacter);
     $(event.currentTarget).trigger('reset');
 
