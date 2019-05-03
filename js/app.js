@@ -57,6 +57,12 @@ $(() => {
 
             $(`#drawSlot${i-1}`).append(newCard);
 
+            if ($('.card').length > 1) {
+              $('#compareSlot1').addClass('stageAppear')
+              $('#compareSlot2').addClass('stageAppear');
+
+            }
+
 
 
             return
@@ -81,7 +87,10 @@ $(() => {
   const showDelete = (event) => {
     if (event.target === event.currentTarget) {
       $(event.target).append(deleteButton);
-      $(event.target).prepend(dragMe);
+      console.log($(event.target).parent().parent().attr('class'));
+      if ($(event.target).parent().parent().attr('class') !== 'stage') {
+        $(event.target).prepend(dragMe);
+      }
 
       $(event.target).addClass('glow');
     }
@@ -172,8 +181,8 @@ $(() => {
     /// also set dropped to true to prevent dragEnd from putting
     /// item back into its original slot
     if (event.target.classList.contains('slots')) {
-      //revert stage slots back to normal but first...
-        // if ($('#compareSlot1').children().length > 0) {
+      // revert stage slots back to normal but first...
+        // if ($(event.target).parent()) {
         //   $('#compareSlot1').attr('class', 'slots');
         //   if ($('#compareSlot2').children().length > 0) {
         //     $('#compareSlot2').attr('class', 'slots');
@@ -188,9 +197,14 @@ $(() => {
 
   const dragEnd = (event) => {
     if (event.target === event.currentTarget) {
-      // revert stage slots back to normal
+      // revert stage slots back to normal if less than 2 cards on board
+      if ($('.card').length < 2) {
       $('#compareSlot1').attr('class', 'slots')
       $('#compareSlot2').attr('class', 'slots')
+    } else {
+      $('#compareSlot1').attr('class', 'slots stageAppear');
+      $('#compareSlot2').attr('class', 'slots stageAppear');
+    }
       /// check if dropped is true, then change it to false and stop
       if (dropped === true) {
         dropped = false;
@@ -198,8 +212,13 @@ $(() => {
       }
       /// if dropped is false, then return back to original slot
       $(event.target).attr('class', 'card');
+        if ($('.card').length > 1) {
+          $('#compareSlot1').attr('class', 'slots stageAppear');
+          $('#compareSlot2').attr('class', 'slots stageAppear');
+        }
       $(`#${pickedUpFrom}`).append($(event.target));
     }
+
 }
 
   ///// listeners
