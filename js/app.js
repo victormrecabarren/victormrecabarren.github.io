@@ -89,9 +89,11 @@ $(() => {
   const compareCharacters = () => {
     if ($('#compareSlot1').children().length && $('#compareSlot2').children().length) {
       console.log('compare slots full');
-      $('#compareSlot1').attr('class', 'slotsWhenStageActivated');
-      $('#compareSlot2').attr('class', 'slotsWhenStageActivated');
+      $('#compareSlot1').attr('class', 'slots slotsWhenStageActivated');
+      $('#compareSlot2').attr('class', 'slots slotsWhenStageActivated');
     } else {
+      $('#compareSlot1').attr('class', 'slots ');
+      $('#compareSlot2').attr('class', 'slots ');
       return
     }
 
@@ -127,6 +129,7 @@ $(() => {
     if ($(event.target).attr('class') === 'deleteButton') {
       $(event.target).parent().remove();
       compareCharacters();
+      console.log('shouldve ran compare func');
     }
   }
 
@@ -194,6 +197,7 @@ $(() => {
   }
 
   const dragDrop = (event) => {
+
     ///// if item dropped on a card slot, then take away the
     ////  invisible class and append the dragged item to it
     /// also set dropped to true to prevent dragEnd from putting
@@ -210,6 +214,7 @@ $(() => {
       $(event.target).append($heldItem.attr('class', 'card'));
       dropped = true;
     }
+
   }
 
 
