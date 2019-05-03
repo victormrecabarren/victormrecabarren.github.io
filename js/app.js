@@ -85,6 +85,23 @@ $(() => {
     }
 
 
+  /////// function that will compare selected cards
+  const compareCharacters = () => {
+    if ($('#compareSlot1').children().length && $('#compareSlot2').children().length) {
+      console.log('compare slots full');
+      $('#compareSlot1').attr('class', 'slotsWhenStageActivated');
+      $('#compareSlot2').attr('class', 'slotsWhenStageActivated');
+    } else {
+      return
+    }
+
+
+  }
+
+
+
+
+
 ///// functions to give delete card option
 
   const deleteButton = $('<div>').addClass('deleteButton').append('&times;');
@@ -108,7 +125,8 @@ $(() => {
 
   const removeCard = () => {
     if ($(event.target).attr('class') === 'deleteButton') {
-      $(event.target).parent().remove()
+      $(event.target).parent().remove();
+      compareCharacters();
     }
   }
 
@@ -204,6 +222,9 @@ $(() => {
       $('#compareSlot1').attr('class', 'slots stageAppear');
       $('#compareSlot2').attr('class', 'slots stageAppear');
     }
+
+      compareCharacters();
+
       /// check if dropped is true, then change it to false and stop
       if (dropped === true) {
         dropped = false;
@@ -227,7 +248,7 @@ $(() => {
   $('form').on('submit', (event) => {
     event.preventDefault();
     let myCharacter = $('#textbox').val();
-    /// correct spelling of spiderman to fit API 
+    /// correct spelling of spiderman to fit API
     if (myCharacter === 'spiderman' || myCharacter === 'Spiderman' || myCharacter === 'spider man' || myCharacter === 'Spider man') {
       myCharacter = 'spider-man'
     }

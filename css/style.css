@@ -95,6 +95,19 @@ form {
   box-sizing: border-box;
 }
 
+.slotsWhenStageActivated {
+  margin: 20px 20%;
+  min-height: 280px;
+  min-width: 25%;
+  max-width: 25%;
+  background-color: transparent;
+  /* border: 1px black solid; */
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition: margin 3s;
+
+}
+
 
 .card {
   height: 100%;
