@@ -27,7 +27,7 @@ let queryURL = baseURL + `ts=`+ ts + `&` + apiKey + `&` + `hash=` + hash + `&` +
 let dropped;
 /// global variable to get 'events' and 'comics' data of API out of function
 
-let
+let events = ''
 
 // function that will make call to API
 
@@ -47,7 +47,7 @@ $(() => {
         for (let i= 2; i < $('.slots').length; i++) {
           if ($('.slots').eq(i).children().length === 0) {
             //// create card
-            const $newCard = $('<div>').addClass('card').attr('draggable', 'true');
+            const $newCard = $('<div>').addClass('card').attr({'draggable': 'true', 'id': `${data.data.results[0].id}`});
 
             const $cardPic = $('<div>').css('background-image', `url('${imgSrc}')`).addClass('cardPic');
 
