@@ -37,6 +37,7 @@ let events = [];
 
 $(() => {
 
+
   const getCharacter = (hero) => {
 
 
