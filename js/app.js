@@ -1,4 +1,4 @@
- 
+
 
 ///// establishing query url for ajax
 
@@ -98,7 +98,8 @@ $(() => {
             }).then((eventdata) => {
               eventObject[`${data.data.results[0].name}`] = eventdata.data.results;
               events.push(eventObject);
-              console.log('done!');
+              prompt(`${data.data.results[0].name} done!`);
+
 
             })
 
