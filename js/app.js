@@ -242,6 +242,8 @@ $(() => {
 
   ///// drag functions
   const dragStart = (event) => {
+
+    $('#compareDiv').remove();
       //change stage slots to indicate dropzone
       $('#compareSlot1').addClass('stageGlow')
       $('#compareSlot2').addClass('stageGlow');
