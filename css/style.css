@@ -14,6 +14,22 @@ body {
   background-attachment: fixed;
 }
 
+
+ul::-webkit-scrollbar {
+    width: 5px;
+}
+
+ul::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+ul::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+  border-radius: 20%;
+}
+
+
 .stageGlow {
   border-radius: 10%;
   background-color: #000;
@@ -111,11 +127,20 @@ form {
 .compareDiv {
   min-height: 20%;
   min-width: 20%;
+  max-height: 20%;
   background: red;
   position: absolute;
   align-self: center;
   transition: min-width 2s;
   text-align: center;
+}
+
+#commonEventsList {
+  max-height: 150px;
+  overflow: auto;
+  border: 1px solid black;
+  list-style-type: none;
+  padding: 0;
 }
 
 
