@@ -60,10 +60,12 @@ body {
 .userForm {
   width: 90%;
   min-height: 50px;
+  box-sizing: border-box;
 }
 
 #textbox {
   width: 100%;
+  height: 40px;
   padding: 12px 20px;
   margin: 8px 0;
   box-sizing: border-box;
@@ -72,23 +74,28 @@ body {
 
 input[type=text]:focus {
   width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  border: 3px solid #ccc;
+  /* padding: 12px 20px; */
+  margin: 0;
+  border: 3px solid crimson;
   transition: 0.5s;
   outline: none;
+  box-sizing: border-box;
+
 }
 
 input[type=submit] {
   margin: auto 0;
   height: 80px;
+  box-sizing: border-box;
+
 }
 
 form {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  box-sizing: border-box;
+
 }
 
 
