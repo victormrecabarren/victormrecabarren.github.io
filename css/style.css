@@ -115,6 +115,7 @@ form {
   position: absolute;
   align-self: center;
   transition: min-width 2s;
+  text-align: center;
 }
 
 

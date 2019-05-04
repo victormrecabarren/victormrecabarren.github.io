@@ -120,6 +120,7 @@ $(() => {
 
   /////// function that will compare selected cards
   const compareCharacters = () => {
+    console.log('compare func running');
     /// check if stage is filled
     if ($('#compareSlot1').children().length && $('#compareSlot2').children().length) {
 
@@ -127,34 +128,39 @@ $(() => {
       console.log('compare slots full');
       $('#compareSlot1').attr('class', 'slots slotsWhenStageActivated');
       $('#compareSlot2').attr('class', 'slots slotsWhenStageActivated');
+
       /// append a new div after delay
-      $('<div>').attr('id', 'compareDiv').addClass('invisible').insertAfter($('#compareSlot1'));
+      let $compareDiv = $('<div>').attr('id', 'compareDiv').addClass('invisible');
+      $compareDiv.append($('<p>').text('Events these two have shared'));
+      $compareDiv.append($('<ul>').attr('id', 'commonEventsList'));
+      $compareDiv.insertAfter($('#compareSlot1'));
+
       setTimeout(() => {
         $('#compareDiv').attr('class', 'compareDiv')
       }, 3000)
 
-      /// add common Events from API, passing id of compare card 1 and compare card 2 as arguments
+
+
+
       getCharacterEvents($('#compareSlot1').children().eq(0).attr('id'), $('#compareSlot2').children().eq(0).attr('id'));
 
-      $('#compareDiv').append($('<p>').text('stuff'));
+
 
     } else {
       /// if stage not full, return slots to normal (undo glow)
       $('#compareSlot1').attr('class', 'slots ');
       $('#compareSlot2').attr('class', 'slots ');
+      $('#compareDiv').remove();
+      console.log('just passed remove line');
       return
     }
   }
 
   const getCharacterEvents = (character1id, character2id) => {
-    console.log('getcharacterevents func ran');
-    console.log(character1id, character2id);
 
-    // first get array that corresponds to compare characters
-
+    // first get array of events for each compare character
     let character1EventArray;
     let character2EventArray;
-
 
       for (let i = 0; i < events.length ; i++) {
         if (events[i][character1id] !== undefined) {
@@ -167,13 +173,17 @@ $(() => {
         }
       }
 
-      console.log(character1EventArray);
-      console.log(character2EventArray);
+      //clear out list before adding to it
+      $('#commonEventsList').empty();
 
+      // get common events in both arrays
       for (let i = 0; i < character1EventArray.length; i++) {
         for (let j = 0; j < character2EventArray.length; j++) {
           if (character1EventArray[i].title === character2EventArray[j].title) {
-            console.log(character1EventArray[i].title);
+            // console.log(character1EventArray[i].title);
+            let $newListItem = $('<li>').text(`${character1EventArray[i].title}`);
+            $('#commonEventsList').append($newListItem)
+            console.log('hi');
           }
         }
       }
@@ -275,22 +285,17 @@ $(() => {
       /// set card slot class back to normal
       $(event.target).attr('class', 'slots')
     }
+    $('#compareDiv').remove();
   }
 
   const dragDrop = (event) => {
 
-    ///// if item dropped on a card slot, then take away the
+    ///// if item dropped on an open slot, then take away the
     ////  invisible class and append the dragged item to it
     /// also set dropped to true to prevent dragEnd from putting
     /// item back into its original slot
     if (event.target.classList.contains('slots')) {
-      // revert stage slots back to normal but first...
-        // if ($(event.target).parent()) {
-        //   $('#compareSlot1').attr('class', 'slots');
-        //   if ($('#compareSlot2').children().length > 0) {
-        //     $('#compareSlot2').attr('class', 'slots');
-        //   }
-        // }
+
       $(event.target).attr('class', 'slots');
       $(event.target).append($heldItem.attr('class', 'card'));
       dropped = true;
