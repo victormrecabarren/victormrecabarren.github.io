@@ -7,9 +7,7 @@ body {
 
 
 body {
-  position: absolute;
-  /* top: calc(50% - 65px);
-  left: calc(50% - 455px); */
+  /* position: absolute; */
   background-image: url("../img/cardbg.jpg");
   background-attachment: fixed;
   background-position: center;
