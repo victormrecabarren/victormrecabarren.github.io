@@ -64,15 +64,36 @@ body {
   min-height: 50px;
 }
 
+#textbox {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+input[type=text]:focus {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 3px solid #ccc;
+  transition: 0.5s;
+  outline: none;
+}
+
+input[type=submit] {
+  margin: auto 0;
+  height: 80px;
+}
+
 form {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-#textbox {
-  min-width: 50%;
-}
+
 
 .cardsContainer1 {
   margin: 0 auto;

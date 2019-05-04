@@ -283,7 +283,7 @@ $(() => {
 
   const dragLeave = () => {
     //check if slot is occupied
-    if (!$(event.target).parents('div.slots').length) {
+    if (!$(event.target).parents('div.slots').length && !event.target.classList.contains('stageGlow')) {
       /// set card slot class back to normal
       $(event.target).attr('class', 'slots')
     }
@@ -292,14 +292,18 @@ $(() => {
 
   const dragDrop = (event) => {
 
+
     ///// if item dropped on an open slot, then take away the
     ////  invisible class and append the dragged item to it
     /// also set dropped to true to prevent dragEnd from putting
     /// item back into its original slot
     if (event.target.classList.contains('slots')) {
+      console.log(event.target);
 
       $(event.target).attr('class', 'slots');
       $(event.target).append($heldItem.attr('class', 'card'));
+      compareCharacters();
+
       dropped = true;
     }
 
@@ -311,12 +315,15 @@ $(() => {
       if ($('.card').length < 2) {
       $('#compareSlot1').attr('class', 'slots')
       $('#compareSlot2').attr('class', 'slots')
+    } else if ($('#compareSlot1').children().length && $('#compareSlot2').children().length) {
+      return
     } else {
       $('#compareSlot1').attr('class', 'slots stageAppear');
       $('#compareSlot2').attr('class', 'slots stageAppear');
+      console.log('shouldve made slots stageappear');
     }
 
-      compareCharacters();
+      // compareCharacters();
 
       /// check if dropped is true, then change it to false and stop
       if (dropped === true) {
