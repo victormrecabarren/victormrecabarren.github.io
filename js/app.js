@@ -10,6 +10,7 @@ const privateKey = `4ed1801c49dd47d9034022152101a0959db7b215
 let hash = `&hash=81f0138cb4590bc6deaacb6e4db98c31`
 let queryType = `&nameStartsWith=`
 
+
 // name that will be decided by user
 // let characterName = 'black panther';
 
@@ -20,6 +21,8 @@ let queryURL = baseURL + ts + apiKey + hash + queryType
 
 
 // https://gateway.marvel.com:443/v1/public/characters/1009368/events?ts=1234567654321&apikey=012c4351d4aecfb2c181fd0b1977192d&hash=81f0138cb4590bc6deaacb6e4db98c31&limit=50
+
+
 
 
 
@@ -37,7 +40,6 @@ $(() => {
   const getCharacter = (hero) => {
 
 
-
     $.ajax({
           url: queryURL + hero
         }).then((data) => {
@@ -46,23 +48,20 @@ $(() => {
         const imgSrc = (data.data.results[0].thumbnail.path +`.`+ data.data.results[0].thumbnail.extension);
         const description = (data.data.results[0].description);
 
-        const characterEvents = data.data.results[0].events.items;
-        const eventObject = {};
-        eventObject[`${data.data.results[0].name}`] = characterEvents;
-        events.push(eventObject)
+        // const characterEvents = data.data.results[0].events.items;
 
-        ////// getting events list
+///// add object of character events to events array
+        // const eventObject = {};
+        // eventObject[`${data.data.results[0].name}`] = characterEvents;
+        // events.push(eventObject)
 
-        // $.ajax({
-        //   url:
-        // })
 
         // check for available slots, then append to first avail
 
         for (let i= 2; i < $('.slots').length; i++) {
           if ($('.slots').eq(i).children().length === 0) {
             //// create card
-            const $newCard = $('<div>').addClass('card').attr({'draggable': 'true', 'id': `${data.data.results[0].id}`});
+            const $newCard = $('<div>').addClass('card').attr({'draggable': 'true', 'id': `${data.data.results[0].name}`});
 
             const $cardPic = $('<div>').css('background-image', `url('${imgSrc}')`).addClass('cardPic');
 
@@ -85,6 +84,23 @@ $(() => {
               $('#compareSlot2').addClass('stageAppear');
 
             }
+
+            ///// second ajax call to get eventdata
+
+            let characterid = data.data.results[0].id
+
+            let eventQueryURL = baseURL + `/` + characterid + `/events` + ts + apiKey + hash + `&limit=50`
+
+            const eventObject = {};
+
+            $.ajax({
+              url: eventQueryURL
+            }).then((eventdata) => {
+              eventObject[`${data.data.results[0].name}`] = eventdata.data.results;
+              events.push(eventObject);
+              console.log('done!');
+
+            })
 
 
 
@@ -131,45 +147,38 @@ $(() => {
   }
 
   const getCharacterEvents = (character1id, character2id) => {
+    console.log('getcharacterevents func ran');
+    console.log(character1id, character2id);
 
-    let character1EventURL = baseURL + `/` + character1id + `/events` + ts + apiKey + hash + `&limit=50`;
+    // first get array that corresponds to compare characters
 
-    let character2EventURL = baseURL + `/` + character2id + `/events` + ts + apiKey + hash + `&limit=50`;
-
-    let character1EventsArray;
-    let character2EventsArray;
-
-    ///// make ajax calls to make arrays of events for each
-
-    $.ajax({
-          url: character1EventURL
-        }).then((data) => {
-         character1EventsArray = data.data.results;
-          console.log(character1EventsArray);
-        })
-    $.ajax({
-          url: character2EventURL
-        }).then((data) => {
-         character2EventsArray = data.data.results;
-          console.log(character2EventsArray);
-        })
-
-        // .then((data) => {
-        //   for (let i = 0; i < character1EventsArray ; i++) {
-        //     for (let j = 0; j < character2EventsArray; j++) {
-        //       if (character1EventsArray[i].title === character2EventsArray[j].title) {
-        //         console.log(character1EventsArray[i]);
-        //       }
-        //     }
-        //   }
-        // })
+    let character1EventArray;
+    let character2EventArray;
 
 
+      for (let i = 0; i < events.length ; i++) {
+        if (events[i][character1id] !== undefined) {
+          character1EventArray = events[i][character1id];
+        }
+      }
+      for (let i = 0; i < events.length ; i++) {
+        if (events[i][character2id] !== undefined) {
+          character2EventArray = events[i][character2id];
+        }
+      }
 
+      console.log(character1EventArray);
+      console.log(character2EventArray);
 
-
+      for (let i = 0; i < character1EventArray.length; i++) {
+        for (let j = 0; j < character2EventArray.length; j++) {
+          if (character1EventArray[i].title === character2EventArray[j].title) {
+            console.log(character1EventArray[i].title);
+          }
+        }
+      }
   }
-  /// will need to get array of titles /////
+
 
 
 
