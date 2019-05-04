@@ -59,6 +59,7 @@ body {
 
 .userForm {
   width: 90%;
+  padding-left: 7%;
   min-height: 50px;
   box-sizing: border-box;
 }
@@ -144,7 +145,7 @@ form {
 
 .compareDiv {
   min-height: 20%;
-  width: 20%;
+  width: 11%;
   min-width: 200px;
   max-height: 20%;
   border-radius: 15%;
