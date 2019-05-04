@@ -98,7 +98,7 @@ $(() => {
             }).then((eventdata) => {
               eventObject[`${data.data.results[0].name}`] = eventdata.data.results;
               events.push(eventObject);
-              prompt(`${data.data.results[0].name} done!`);
+              alert(`${data.data.results[0].name} done!`);
 
 
             })
@@ -182,7 +182,7 @@ $(() => {
         for (let j = 0; j < character2EventArray.length; j++) {
           if (character1EventArray[i].title === character2EventArray[j].title) {
             // console.log(character1EventArray[i].title);
-            let $newListItem = $('<li>').text(`${character1EventArray[i].title}`);
+            let $newListItem = $('<li>').text(`${choparacter1EventArray[i].title}`);
             $('#commonEventsList').append($newListItem)
             console.log('hi');
           }
