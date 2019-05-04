@@ -1,4 +1,4 @@
-
+ 
 
 ///// establishing query url for ajax
 

@@ -1,9 +1,8 @@
-# Project1
+# Marvel Character Compare
 
-
-Pull info from Marvel API and display characterstics and media of selected character.
-Drag and drop Character cards into a staging area to see common histories of those two characters, ie battles theyve been in, movies together, common enemies, etc.
-
+ 
+Pull info from Marvel API and display characteristics / media of selected character.
+Drag and drop Character cards into a staging area to see common histories of those two characters, ie battles they've been in together, common major events.
 
 
 User story and how to meet project requirements:
