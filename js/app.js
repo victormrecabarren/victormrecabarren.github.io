@@ -2,23 +2,24 @@
 
 ///// establishing query url for ajax
 
-const baseURL = `https://gateway.marvel.com:443/v1/public/characters?`;
-let ts = `1234567654321`;
-const apiKey = `apikey=012c4351d4aecfb2c181fd0b1977192d`;
+const baseURL = `https://gateway.marvel.com:443/v1/public/characters`;
+let ts = `?ts=1234567654321`;
+const apiKey = `&apikey=012c4351d4aecfb2c181fd0b1977192d`;
 const privateKey = `4ed1801c49dd47d9034022152101a0959db7b215
 `;
-let hash = `81f0138cb4590bc6deaacb6e4db98c31`
-let queryType = `nameStartsWith=`
+let hash = `&hash=81f0138cb4590bc6deaacb6e4db98c31`
+let queryType = `&nameStartsWith=`
 
 // name that will be decided by user
 // let characterName = 'black panther';
 
 //  hash must = `md5 of ts+privateKey+apiKey`
 
-let queryURL = baseURL + `ts=`+ ts + `&` + apiKey + `&` + `hash=` + hash + `&` + queryType
+let queryURL = baseURL + ts + apiKey + hash + queryType
 
 
 
+// https://gateway.marvel.com:443/v1/public/characters/1009368/events?ts=1234567654321&apikey=012c4351d4aecfb2c181fd0b1977192d&hash=81f0138cb4590bc6deaacb6e4db98c31&limit=50
 
 
 
@@ -27,13 +28,16 @@ let queryURL = baseURL + `ts=`+ ts + `&` + apiKey + `&` + `hash=` + hash + `&` +
 let dropped;
 /// global variable to get 'events' and 'comics' data of API out of function
 
-let events = ''
+let events = [];
 
 // function that will make call to API
 
 $(() => {
 
   const getCharacter = (hero) => {
+
+
+
     $.ajax({
           url: queryURL + hero
         }).then((data) => {
@@ -41,6 +45,17 @@ $(() => {
           // get thumbnail img
         const imgSrc = (data.data.results[0].thumbnail.path +`.`+ data.data.results[0].thumbnail.extension);
         const description = (data.data.results[0].description);
+
+        const characterEvents = data.data.results[0].events.items;
+        const eventObject = {};
+        eventObject[`${data.data.results[0].name}`] = characterEvents;
+        events.push(eventObject)
+
+        ////// getting events list
+
+        // $.ajax({
+        //   url:
+        // })
 
         // check for available slots, then append to first avail
 
@@ -96,15 +111,16 @@ $(() => {
       console.log('compare slots full');
       $('#compareSlot1').attr('class', 'slots slotsWhenStageActivated');
       $('#compareSlot2').attr('class', 'slots slotsWhenStageActivated');
-      /// append a new div
+      /// append a new div after delay
       $('<div>').attr('id', 'compareDiv').addClass('invisible').insertAfter($('#compareSlot1'));
       setTimeout(() => {
         $('#compareDiv').attr('class', 'compareDiv')
       }, 3000)
 
-      /// add API info
-      $('#compareDiv').append($('<p>').text('stuff'));
+      /// add common Events from API, passing id of compare card 1 and compare card 2 as arguments
+      getCharacterEvents($('#compareSlot1').children().eq(0).attr('id'), $('#compareSlot2').children().eq(0).attr('id'));
 
+      $('#compareDiv').append($('<p>').text('stuff'));
 
     } else {
       /// if stage not full, return slots to normal (undo glow)
@@ -112,9 +128,49 @@ $(() => {
       $('#compareSlot2').attr('class', 'slots ');
       return
     }
+  }
+
+  const getCharacterEvents = (character1id, character2id) => {
+
+    let character1EventURL = baseURL + `/` + character1id + `/events` + ts + apiKey + hash + `&limit=50`;
+
+    let character2EventURL = baseURL + `/` + character2id + `/events` + ts + apiKey + hash + `&limit=50`;
+
+    let character1EventsArray;
+    let character2EventsArray;
+
+    ///// make ajax calls to make arrays of events for each
+
+    $.ajax({
+          url: character1EventURL
+        }).then((data) => {
+         character1EventsArray = data.data.results;
+          console.log(character1EventsArray);
+        })
+    $.ajax({
+          url: character2EventURL
+        }).then((data) => {
+         character2EventsArray = data.data.results;
+          console.log(character2EventsArray);
+        })
+
+        // .then((data) => {
+        //   for (let i = 0; i < character1EventsArray ; i++) {
+        //     for (let j = 0; j < character2EventsArray; j++) {
+        //       if (character1EventsArray[i].title === character2EventsArray[j].title) {
+        //         console.log(character1EventsArray[i]);
+        //       }
+        //     }
+        //   }
+        // })
+
+
+
 
 
   }
+  /// will need to get array of titles /////
+
 
 
 
