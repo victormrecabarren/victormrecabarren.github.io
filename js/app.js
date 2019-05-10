@@ -12,7 +12,7 @@ const darkMode = (event) => {
     // code here
 
   } else {
-    // remove dark classes from all elements on page 
+    // remove dark classes from all elements on page
     console.log('dark mode class removed from body');
     $('body').attr('class', '')
   }
