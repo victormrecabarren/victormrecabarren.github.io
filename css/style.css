@@ -1,114 +1,252 @@
-.darkmode {
-  background-color: #161633;
-  color: white;
+body {
+  /* background-color: darkgray; */
 }
 
-.container-fluid {
-  padding: 0;
-}
 
-header {
-  /* height: 400px; */
-}
+/* //////////////////////////////////////////////////// */
 
-header h1 {
-  padding: 10%;
-  padding-top: 30%;
-  padding-bottom: 0;
+
+body {
+  /* position: absolute; */
+  background-image: url("../img/cardbg.jpg");
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
 }
 
 
 
-/* .block {
-  height: 40%;
-  width: 100%;
-} */
 
-.sticky-top {
-  background: white;
+
+.stageGlow {
+  border-radius: 10%;
+  background-color: #000;
+  box-shadow: 0 0 40px 20px #fff, 0 0 100px 50px #0ff;
+  transition: box-shadow 1s ease-out;
 }
 
-.sticky-top h4 {
-  background: white;
-  padding: 10%;
-  padding-top: 5%;
-  padding-bottom: 0;
+.stageAppear {
+  border: 3px solid white;
+  box-sizing: border-box;
+
 }
 
-/* .sticky-top input, .sticky-top label {
-  padding: 10%;
-} */
 
-/* .custom-switch {
-  padding-left: 90%;
-} */
+/* //////////////////////////////////////////////////// */
 
-.theme-switch-wrapper {
+
+.board {
+  margin: 0 auto;
+  width: 100%
+}
+
+.container  {
+  margin: 0 auto;
+  width: 80%;
+  max-width: 1000px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding-left: 85%;
+}
+
+.stage {
+  min-height: 300px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+}
+
+
+.userForm {
+  width: 90%;
+  padding-left: 7%;
+  min-height: 50px;
+  box-sizing: border-box;
+}
+
+#textbox {
+  width: 100%;
+  height: 40px;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+input[type=text]:focus {
+  width: 100%;
+  /* padding: 12px 20px; */
+  margin: 0;
+  border: 3px solid crimson;
+  transition: 0.5s;
+  outline: none;
+  box-sizing: border-box;
+
+}
+
+input[type=submit] {
+  margin: auto 0;
+  height: 80px;
+  box-sizing: border-box;
+
+}
+
+form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  box-sizing: border-box;
 
 }
 
 
-.theme-switch {
-  display: inline-block;
-  height: 25px;
-  position: relative;
-  width: 45px;
+
+.cardsContainer1 {
+  margin: 0 auto;
+  min-height: 300px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  flex-flow: row wrap;
 }
 
-.theme-switch input {
-  display:none;
+/* .cardsContainer2{
+  min-height: 300px;
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+} */
+
+.slots {
+  margin: 20px;
+  min-height: 280px;
+  max-height: 280px;
+  /* min-width: 25%; */
+  width: 25%;
+  min-width: 220px;
+  background-color: transparent;
+  /* border: 1px black solid; */
+  border-radius: 10px;
+  box-sizing: border-box;
 }
 
-.slider {
-  background-color: #026;
-  bottom: 0;
+.slotsWhenStageActivated {
+  margin: 20px 20%;
+  min-height: 280px;
+  min-width: 25%;
+  max-width: 25%;
+  background-color: transparent;
+  /* border: 1px black solid; */
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition: margin 3s;
+
+}
+
+.compareDiv {
+  min-height: 20%;
+  width: 11%;
+  min-width: 200px;
+  max-height: 20%;
+  border-radius: 15%;
+  color: black;
+  background: crimson;
+  position: absolute;
+  align-self: center;
+  transition: min-width 2s;
+  text-align: center;
+}
+
+#commonEventsList {
+  max-height: 150px;
+  overflow: auto;
+  border: 1px solid black;
+  list-style-type: none;
+  padding: 0;
+  background: white;
+  border-radius: 0 0 16% 16%;
+}
+
+
+.card {
+  height: 100%;
+  width: 100%;
   cursor: pointer;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transition: .4s;
+  box-sizing: border-box;
+  background-size: cover;
+  background-color: navy;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 10px;
+  overflow: auto;
+  /* display: flex;
+  flex-direction: row; */
+
+
+
+
+
 }
 
-.slider:before {
-  background-color: #fff;
-  bottom: 3px;
-  content: "";
-  height: 19px;
-  left: 3px;
-  position: absolute;
-  transition: .4s;
-  width: 19px;
+.hold {
+
 }
 
-input:checked + .slider {
-  background-color: gray;
+.hovered {
+  background: radial-gradient(#000, blue);
+  border: 2px crimson solid;
+  box-sizing: border-box;
 }
 
-input:checked + .slider:before {
-  transform: translateX(19px);
+.stageHovered {
+  background: darkblue;
+  border: 2px crimson solid;
 }
 
-.slider.round {
-  border-radius: 26px;
+.invisible {
+  display: none;
 }
 
-.slider.round:before {
-  border-radius: 50%;
+.deleteButton {
+  height: 10%;
+  width: 20%;
+  background-color: dodgerblue;
+  color: black;
+  font-size: 20px;
+  text-align: center;
+  font-family: sans-serif;
+  border: 2px solid royalblue;
+  border-radius: 100px;
+  float: right;
 }
 
 
-/* testing  */
 
-
-nav {
-  border-radius: 0 0 20px 20px;
-  margin: 10px 0;
+.deleteButton:hover {
+  background-color: darkred;
 }
 
-article {
-  padding: 10%;
+.glow:hover {
+  box-shadow: 0px 0px 40px 20px white;
+  transition: box-shadow 1s ease-out;
+}
+
+.cardPic {
+  height: 100px;
+  width: 100px;
+  margin: 0 auto;
+  /* float: left; */
+  border-radius: 10%;
+  background-position: center;
+  background-size: 100%;
+}
+
+
+
+.cardInfo {
+  color: black;
+  background: white;
+  margin: 5% 10% 0 10%;
+  padding: 5%;
+
 }

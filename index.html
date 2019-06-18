@@ -3,70 +3,52 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></link>
     <link rel = 'stylesheet' type = 'text/css' href = 'css/style.css'></link>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
     <script
-      src="https://code.jquery.com/jquery-3.4.1.min.js"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"></script>
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+
+
     <script src="js/app.js" charset="utf-8"></script>
+
+
+
   </head>
   <body>
 
-    <div class="container-fluid">
-      <header>
-        <!-- <div class="block"></div> -->
-        <h1 class="display-4"> Victor Recabarren </h1>
-      </header>
-      <div class="sticky-top">
-        <h4> Testing a blog. Playing with style and layout.
-        </h4>
-        <!-- <span class="custom-control custom-switch" id="darkmode">
-          <input type="checkbox" class="custom-control-input" id="customSwitch1">
-          <label class="custom-control-label" for="customSwitch1"></label>
-        </span> -->
 
-        <div class="theme-switch-wrapper">
-          <label class="theme-switch" for="checkbox">
-            <input type="checkbox" id="checkbox" />
-            <div class="slider round"></div>
-          </label>
+
+    <div class="board">
+      <div class="container">
+        <div class="stage">
+          <div class="slots" id="compareSlot1"></div>
+          <div class="slots" id="compareSlot2"></div>
         </div>
+        <div class="userForm">
+          <form>
+            <input type='text' placeholder='Who are your favorite Marvel characters?' id='textbox' />
+            <input type='submit' />
+          </form>
 
-        <nav class="navbar navbar-light bg-light justify-content-center">
-          <ul class="nav">
-            <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Reviews</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Performed</a></li>
-          </ul>
-        </nav>
-      </div>
-
-      <article>
-        <div id="darkmodeslider"></div>
-        <main>
-          <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </p>
-          <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </p>
-          <div class="jumbotron">
-            <h3 class="display-5">Hello, world!</h3>
-            <p class="lead">Some info.</p>
-            <hr class="my-2">
-            <p>More info</p>
-            <a class="btn btn-primary btn-md" href="#" role="button">View</a>
+        </div>
+        <div class="cardsContainer1">
+          <div class="slots" id="drawSlot1">
           </div>
-
-        </main>
-        </article>
-        <footer>
-        </footer>
-
-
-
-
-
+          <div class="slots" id="drawSlot2">
+          </div>
+          <div class="slots" id="drawSlot3">
+          </div>
+          <div class="slots" id="drawSlot4">
+          </div>
+          <div class="slots" id="drawSlot5">
+          </div>
+          <div class="slots" id="drawSlot6">
+          </div>
+        <!-- </div>
+      </div>
     </div>
 
   </body>
