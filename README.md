@@ -1,5 +1,8 @@
 # Marvel Character Compare
 
+# **UPDATE**
+## The Marvel API appears to be down, this app will no longer pull data
+
 
 Pull info from Marvel API and display characteristics / media of selected character.
 Drag and drop Character cards into a staging area to see common histories of those two characters, ie battles they've been in together, common major events.
