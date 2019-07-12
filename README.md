@@ -1,7 +1,7 @@
 # Marvel Character Compare
 
-Link to project, hosted on Github Pages: 
-https://victormrecabarren.github.io/
+**Link to project, hosted on Github Pages: 
+https://victormrecabarren.github.io/**
 
 
 Pull info from Marvel API and display characteristics / media of selected character.
