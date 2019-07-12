@@ -1,7 +1,7 @@
 # Marvel Character Compare
 
-# **UPDATE**
-## The Marvel API appears to be down, this app will no longer pull data
+Link to project, hosted on Github Pages: 
+https://victormrecabarren.github.io/
 
 
 Pull info from Marvel API and display characteristics / media of selected character.
