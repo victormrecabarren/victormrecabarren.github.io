@@ -1,55 +1,28 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <link rel = 'stylesheet' type = 'text/css' href = 'css/style.css'></link>
-    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-
-    <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
-
-
-    <script src="js/app.js" charset="utf-8"></script>
-
-
-
-  </head>
-  <body>
-
-
-
-    <div class="board">
-      <div class="container">
-        <div class="stage">
-          <div class="slots" id="compareSlot1"></div>
-          <div class="slots" id="compareSlot2"></div>
-        </div>
-        <div class="userForm">
-          <form>
-            <input type='text' placeholder='Who are your favorite Marvel characters?' id='textbox' />
-            <input type='submit' />
-          </form>
-
-        </div>
-        <div class="cardsContainer1">
-          <div class="slots" id="drawSlot1">
-          </div>
-          <div class="slots" id="drawSlot2">
-          </div>
-          <div class="slots" id="drawSlot3">
-          </div>
-          <div class="slots" id="drawSlot4">
-          </div>
-          <div class="slots" id="drawSlot5">
-          </div>
-          <div class="slots" id="drawSlot6">
-          </div>
-        <!-- </div>
-      </div>
-    </div>
-
-  </body>
-</html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Victor’s personal apps, experiments, and projects from the archives.">
+<title>Victor’s little corner</title>
+<style>
+:root{color-scheme:light dark;--bg:#f6f4ef;--ink:#252c28;--muted:#657068;--line:#d7ddd5;--card:#fffefb;--accent:#2d614b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,sans-serif}main{max-width:940px;margin:auto;padding:80px 24px}header{margin-bottom:56px}.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}h1{font-size:clamp(36px,7vw,62px);line-height:1.1;letter-spacing:-.05em;margin:16px 0}header p{max-width:540px;color:var(--muted)}h2{font-size:22px;margin:0}section{margin:42px 0}.intro{margin:4px 0 18px;color:var(--muted);font-size:15px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.card{display:block;padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--card);text-decoration:none;color:inherit}.card:hover{border-color:var(--accent);transform:translateY(-2px)}a:focus-visible{outline:3px solid var(--accent);outline-offset:5px}.card strong{display:block;font-size:19px}.card span{display:block;color:var(--muted);font-size:14px;margin-top:8px}.portfolio,footer{border-top:1px solid var(--line);padding-top:24px}a{color:var(--accent)}footer{margin-top:64px;color:var(--muted);font-size:14px}
+@media(prefers-color-scheme:dark){:root{--bg:#18201c;--ink:#eff2eb;--muted:#a7b4aa;--line:#3b4940;--card:#202b24;--accent:#a7d7b5}}
+@media(prefers-reduced-motion:no-preference){.card{transition:transform .15s,border-color .15s}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow">Victor Recabarren</div><h1>A little space for<br>little projects.</h1><p>Personal apps, things made for fun, and a few memories from learning to build for the web.</p></header>
+<section aria-labelledby="personal"><h2 id="personal">For fun & everyday use</h2><p class="intro">My personal playground. More little tools will land here over time.</p><div class="grid">
+<a class="card" href="/melee-ironman/"><strong>Melee Ironman ↗</strong><span>A personal Melee project.</span></a>
+<a class="card" href="/paper-ui/"><strong>Paper UI ↗</strong><span>A place to play with interfaces.</span></a>
+<a class="card" href="/mdleaguedata/"><strong>MD League Data ↗</strong><span>A personal league data project.</span></a>
+</div></section>
+<section aria-labelledby="archive"><h2 id="archive">From the school days</h2><p class="intro">Old projects kept for the memories. Some features depend on older external services.</p><div class="grid">
+<a class="card" href="/marvel/"><strong>Marvel Character Compare ↗</strong><span>An early experiment with character cards and the Marvel API.</span></a>
+<a class="card" href="/My-Spotify-React/"><strong>My Spotify React ↗</strong><span>A school project built around Spotify.</span></a>
+</div></section>
+<section class="portfolio" aria-labelledby="portfolio"><h2 id="portfolio">Professional work</h2><p class="intro">My portfolio has its own space, separate from the playground.</p><a href="/myPortfolio/">Visit my current portfolio ↗</a></section>
+<footer>Made at my own pace. <a href="https://github.com/victormrecabarren">Find the code on GitHub ↗</a></footer>
+</main></body></html>
