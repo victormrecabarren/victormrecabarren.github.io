@@ -14,7 +14,7 @@ const formatTime=seconds=>`${Math.floor(seconds/60)}:${String(seconds%60).padSta
 function showScreen(id){document.body.classList.toggle('playing',id==='game');updateViewport();for(const screen of ['welcome','game','results']) $(screen).hidden=screen!==id;}
 function shuffle(items){const result=[...items];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
 function start(){clearInterval(ticker);order=shuffle(countries);position=0;correct=new Set();skipped=new Set();solved=false;active=true;started=performance.now();$('clock').textContent='0:00';showScreen('game');ticker=setInterval(()=>$('clock').textContent=formatTime(elapsed()),250);render();}
-function loadFlag(){ $('image-error').hidden=true;$('flag').hidden=false;$('flag').src=`https://flagcdn.com/w640/${order[position].code}.png`; }
+function loadFlag(){ $('image-error').hidden=true;$('flag').hidden=true;$('flag').src=`https://flagcdn.com/w640/${order[position].code}.png`; }
 function render(message=''){solved=false;$('progress').textContent=`Flag ${position+1} / ${order.length}`;$('score').textContent=`${correct.size} correct`;$('bar').value=position;$('answer').value='';$('answer').disabled=false;$('feedback').textContent=message;$('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();$('answer').focus();}
 function next(){if(!active)return;if(!solved)skipped.add(order[position].code);position++;if(position===order.length)finish();else render();}
 function finish(){if(!active)return;const seconds=elapsed();active=false;clearInterval(ticker);showScreen('results');$('result-label').textContent=position===order.length?'ROUND COMPLETE':'ROUND ENDED';$('result-title').textContent=`${correct.size} / ${order.length} correct`;$('summary').textContent=`Your time: ${formatTime(seconds)} · ${skipped.size} skipped · ${order.length-correct.size-skipped.size} not attempted`;
@@ -40,5 +40,6 @@ window.visualViewport?.addEventListener('resize',updateViewport);
 window.visualViewport?.addEventListener('scroll',updateViewport);
 window.addEventListener('resize',updateViewport);
 updateViewport();
+$('flag').addEventListener('load',()=>{$('flag').hidden=false;});
 $('flag').addEventListener('error',()=>{$('flag').hidden=true;$('image-error').hidden=false;});
 $('start').addEventListener('click',start);$('again').addEventListener('click',start);$('next').addEventListener('click',next);$('finish').addEventListener('click',finish);$('retry').addEventListener('click',loadFlag);
