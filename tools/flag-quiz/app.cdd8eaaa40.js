@@ -11,15 +11,15 @@ const normalize = s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCa
 const accepts = (country,answer)=>country.answers.some(name=>normalize(name)===normalize(answer));
 const $ = id=>document.getElementById(id);
 let order=[],correct=new Set(),skipped=new Set(),seen=new Set(),started=0,deadline=0,duration=1200,ticker,active=false;
-const elapsed=()=>Math.min(duration,Math.max(0,Math.floor((Date.now()-started)/1000)));
-const remaining=()=>Math.max(0,Math.ceil((deadline-Date.now())/1000));
+const elapsed=()=>Math.min(duration||Infinity,Math.max(0,Math.floor((Date.now()-started)/1000)));
+const remaining=()=>duration?Math.max(0,Math.ceil((deadline-Date.now())/1000)):Infinity;
 const formatTime=seconds=>`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
 function showScreen(id){document.body.classList.toggle('playing',id==='game');updateViewport();for(const screen of ['welcome','game','results']) $(screen).hidden=screen!==id;}
 function shuffle(items){const result=[...items];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
-function tick(){if(!active)return;$('clock').textContent=formatTime(remaining());if(remaining()===0)finish('timeout');}
+function tick(){if(!active)return;$('clock').textContent=formatTime(duration?remaining():elapsed());if(remaining()===0)finish('timeout');}
 function start(){
  clearInterval(ticker);duration=Number($('duration').value)*60;
- if(![300,600,1200,1800].includes(duration))duration=1200;
+ if(![0,300,600,1200,1800].includes(duration))duration=1200;
  order=shuffle(countries);correct=new Set();skipped=new Set();seen=new Set();active=true;
  started=Date.now();deadline=started+duration*1000;
  showScreen('game');tick();ticker=setInterval(tick,250);render();
@@ -42,7 +42,7 @@ function finish(reason='giveup'){
  $('result-label').textContent=reason==='complete'?'ALL FLAGS CORRECT':reason==='timeout'?"TIME’S UP":'ROUND ENDED';
  $('result-title').textContent=`${correct.size} / ${countries.length} correct`;
  const unattempted=countries.filter(c=>!seen.has(c.code)).length;
- $('summary').textContent=`Time used: ${formatTime(seconds)} of ${formatTime(duration)} · ${order.length} remaining · ${unattempted} not reached`;
+ $('summary').textContent=`Time used: ${formatTime(seconds)} ${duration?`of ${formatTime(duration)}`:"(untimed)"} · ${order.length} remaining · ${unattempted} not reached`;
  const missed=countries.filter(c=>!correct.has(c.code));
  $('missed-title').textContent=missed.length?`Countries you missed (${missed.length})`:'A perfect trip around the world!';
  $('missed').replaceChildren();
