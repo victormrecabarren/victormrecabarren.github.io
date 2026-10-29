@@ -3,12 +3,20 @@
  const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
  const button=$('voice-toggle'),status=$('voice-status');
  let enabled=false,recognizer=null,generation=0,restartTimer=null;
- const consumed=new Map(),latest=new Map();
+ const consumed=new Map(),latest=new Map(),closing=new Set();
+ let startupTimer=null,shutdownTimer=null;
  const canListen=()=>enabled&&active&&!document.hidden&&!$('give-up-dialog').open;
  function pause(){
-  generation++;clearTimeout(restartTimer);
+  generation++;clearTimeout(restartTimer);clearTimeout(startupTimer);
   const previous=recognizer;recognizer=null;
-  if(previous){try{previous.abort();}catch{}}
+  if(previous){
+   closing.add(previous);
+   try{previous.abort();}catch{closing.delete(previous);}
+   clearTimeout(shutdownTimer);
+   shutdownTimer=setTimeout(()=>{
+    if(closing.size&&enabled)stop('Microphone is still closing. Tap Speak again in a moment.');
+   },4000);
+  }
  }
  function stop(message=''){
   enabled=false;pause();button.textContent='🎙 Speak';button.setAttribute('aria-pressed','false');status.textContent=message;
@@ -21,12 +29,14 @@
   if(!recognizer){clearTimeout(restartTimer);listen(generation);}
  }
  function listen(currentGeneration){
-  if(currentGeneration!==generation||!canListen())return;
+  if(currentGeneration!==generation||!canListen()||recognizer)return;
+  if(closing.size){status.textContent='Waiting for the microphone…';return;}
+  status.textContent='Starting microphone…';
   consumed.clear();latest.clear();
   const session=new Recognition();recognizer=session;
   session.lang='en-US';session.continuous=true;session.interimResults=true;session.maxAlternatives=3;
   const isCurrent=()=>currentGeneration===generation&&recognizer===session&&canListen();
-  session.onstart=()=>{if(isCurrent())status.textContent='Listening — say a country';};
+  session.onstart=()=>{if(isCurrent()){clearTimeout(startupTimer);status.textContent='Listening — say a country';}};
   session.onresult=event=>{
    if(!isCurrent())return;
    for(let i=event.resultIndex;i<event.results.length;i++){
@@ -62,11 +72,23 @@
    stop(message);
   };
   session.onend=()=>{
-   if(!isCurrent())return;
-   recognizer=null;
-   restartTimer=setTimeout(()=>listen(currentGeneration),100);
+   const wasClosing=closing.delete(session);
+   if(!closing.size)clearTimeout(shutdownTimer);
+   if(recognizer===session){recognizer=null;clearTimeout(startupTimer);}
+   // An aborted session must finish releasing the microphone before another starts.
+   if((wasClosing||currentGeneration===generation)&&canListen()&&!recognizer&&!closing.size){
+    clearTimeout(restartTimer);
+    const nextGeneration=generation;
+    restartTimer=setTimeout(()=>listen(nextGeneration),150);
+   }
   };
-  try{session.start();}catch{stop('Tap Speak to start listening again.');}
+  try{
+   session.start();
+   if(isCurrent())startupTimer=setTimeout(()=>{
+    if(isCurrent())stop('Microphone did not start. Tap Speak to retry.');
+   },5000);
+  }catch{stop('Tap Speak to start listening again.');}
+
  }
  window.quizVoice={get enabled(){return enabled;},reset,pause,stop};
  if(!Recognition){button.disabled=true;status.textContent='Voice isn’t supported in this browser. Try Safari or Chrome.';return;}
