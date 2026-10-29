@@ -10,25 +10,57 @@ const countries = codes.map(code=>({code,name:(variants[code]||[countryNames[cod
 const normalize = s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]/g,'');
 const accepts = (country,answer)=>country.answers.some(name=>normalize(name)===normalize(answer));
 const $ = id=>document.getElementById(id);
-let order=[],position=0,correct=new Set(),skipped=new Set(),started=0,ticker,solved=false,active=false;
-const elapsed=()=>Math.max(0,Math.floor((performance.now()-started)/1000));
+let order=[],correct=new Set(),skipped=new Set(),seen=new Set(),started=0,deadline=0,duration=1200,ticker,active=false;
+const elapsed=()=>Math.min(duration,Math.max(0,Math.floor((Date.now()-started)/1000)));
+const remaining=()=>Math.max(0,Math.ceil((deadline-Date.now())/1000));
 const formatTime=seconds=>`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
 function showScreen(id){document.body.classList.toggle('playing',id==='game');updateViewport();for(const screen of ['welcome','game','results']) $(screen).hidden=screen!==id;}
 function shuffle(items){const result=[...items];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
-function start(){clearInterval(ticker);order=shuffle(countries);position=0;correct=new Set();skipped=new Set();solved=false;active=true;started=performance.now();$('clock').textContent='0:00';showScreen('game');ticker=setInterval(()=>$('clock').textContent=formatTime(elapsed()),250);render();}
-function loadFlag(){ $('image-error').hidden=true;$('flag').hidden=true;$('flag').src=`https://flagcdn.com/w640/${order[position].code}.png`; }
-function render(message=''){solved=false;$('progress').textContent=`Flag ${position+1} / ${order.length}`;$('score').textContent=`${correct.size} correct`;$('bar').value=position;$('answer').value='';$('answer').disabled=false;$('feedback').textContent=message;$('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();$('answer').focus();}
-function next(){if(!active)return;if(!solved)skipped.add(order[position].code);position++;if(position===order.length)finish();else render();}
-function finish(){if(!active)return;const seconds=elapsed();active=false;clearInterval(ticker);showScreen('results');$('result-label').textContent=position===order.length?'ROUND COMPLETE':'ROUND ENDED';$('result-title').textContent=`${correct.size} / ${order.length} correct`;$('summary').textContent=`Your time: ${formatTime(seconds)} · ${skipped.size} skipped · ${order.length-correct.size-skipped.size} not attempted`;
- const missed=order.filter(c=>!correct.has(c.code));$('missed-title').textContent=missed.length?`Countries you missed (${missed.length})`:'A perfect trip around the world!';$('missed').replaceChildren();for(const c of missed){const row=document.createElement('div');row.className='missed-row';const img=document.createElement('img');img.src=`https://flagcdn.com/w80/${c.code}.png`;img.alt=`Flag of ${c.name}`;img.loading='lazy';const name=document.createElement('strong');name.textContent=c.name;const status=document.createElement('span');status.textContent=skipped.has(c.code)?'Skipped':'Not attempted';row.append(img,name,status);$('missed').append(row);}$('again').focus();}
+function tick(){if(!active)return;$('clock').textContent=formatTime(remaining());if(remaining()===0)finish('timeout');}
+function start(){
+ clearInterval(ticker);duration=Number($('duration').value)*60;
+ if(![300,600,1200,1800].includes(duration))duration=1200;
+ order=shuffle(countries);correct=new Set();skipped=new Set();seen=new Set();active=true;
+ started=Date.now();deadline=started+duration*1000;
+ showScreen('game');tick();ticker=setInterval(tick,250);render();
+}
+function loadFlag(){ $('image-error').hidden=true;$('flag').hidden=true;$('flag').src=`https://flagcdn.com/w640/${order[0].code}.png`; }
+function render(message=''){
+ seen.add(order[0].code);$('progress').textContent=`${order.length} flags left`;
+ $('score').textContent=`${correct.size} / ${countries.length} correct`;$('bar').value=correct.size;
+ $('answer').value='';$('answer').disabled=false;$('feedback').textContent=message;
+ $('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();$('answer').focus();
+}
+function next(){
+ if(!active)return;if(remaining()===0){finish('timeout');return;}
+ skipped.add(order[0].code);order.push(order.shift());render();
+}
+function finish(reason='giveup'){
+ if(!active)return;
+ if(remaining()===0)reason='timeout';
+ const seconds=elapsed();active=false;clearInterval(ticker);showScreen('results');
+ $('result-label').textContent=reason==='complete'?'ALL FLAGS CORRECT':reason==='timeout'?"TIME’S UP":'ROUND ENDED';
+ $('result-title').textContent=`${correct.size} / ${countries.length} correct`;
+ const unattempted=countries.filter(c=>!seen.has(c.code)).length;
+ $('summary').textContent=`Time used: ${formatTime(seconds)} of ${formatTime(duration)} · ${order.length} remaining · ${unattempted} not reached`;
+ const missed=countries.filter(c=>!correct.has(c.code));
+ $('missed-title').textContent=missed.length?`Countries you missed (${missed.length})`:'A perfect trip around the world!';
+ $('missed').replaceChildren();
+ for(const c of missed){
+  const row=document.createElement('div');row.className='missed-row';
+  const img=document.createElement('img');img.src=`https://flagcdn.com/w80/${c.code}.png`;img.alt=`Flag of ${c.name}`;img.loading='lazy';
+  const name=document.createElement('strong');name.textContent=c.name;
+  const status=document.createElement('span');status.textContent=skipped.has(c.code)?'Skipped':seen.has(c.code)?'Unanswered':'Not reached';
+  row.append(img,name,status);$('missed').append(row);
+ }
+ $('again').focus();
+}
 function checkAnswer(event){
-  if(event?.isComposing || !active || solved || !accepts(order[position],$('answer').value))return;
-  solved=true;
-  const name=order[position].name;
-  correct.add(order[position].code);
-  position++;
-  if(position===order.length)finish();
-  else render(`Correct! ${name}.`);
+ if(event?.isComposing || !active)return;
+ if(remaining()===0){finish('timeout');return;}
+ if(!accepts(order[0],$('answer').value))return;
+ const country=order.shift();correct.add(country.code);skipped.delete(country.code);
+ if(!order.length)finish('complete');else render(`Correct! ${country.name}.`);
 }
 $('answer').addEventListener('input',checkAnswer);
 $('answer').addEventListener('compositionend',checkAnswer);
@@ -44,4 +76,7 @@ window.addEventListener('resize',updateViewport);
 updateViewport();
 $('flag').addEventListener('load',()=>{$('flag').hidden=false;});
 $('flag').addEventListener('error',()=>{$('flag').hidden=true;$('image-error').hidden=false;});
-$('start').addEventListener('click',start);$('again').addEventListener('click',start);$('next').addEventListener('click',next);$('finish').addEventListener('click',finish);$('retry').addEventListener('click',loadFlag);
+$('start').addEventListener('click',start);$('again').addEventListener('click',()=>{showScreen('welcome');$('duration').focus();});$('next').addEventListener('click',next);$('finish').addEventListener('click',()=>finish('giveup'));$('retry').addEventListener('click',loadFlag);
+
+document.addEventListener('visibilitychange',tick);
+window.addEventListener('pageshow',tick);

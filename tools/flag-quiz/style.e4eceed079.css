@@ -19,3 +19,5 @@
  body.playing .actions button{padding:8px 10px;font-size:12px}
  body.playing .stats{flex-shrink:0}
 }
+
+.duration-picker{margin:24px auto 18px;max-width:240px}.duration-picker label{font-size:14px}.duration-picker select{font:inherit;width:100%;padding:10px 14px;border:1px solid var(--input-line);border-radius:10px;background:var(--input);color:var(--ink)}select:focus-visible{outline:3px solid #bc9637;outline-offset:4px}
