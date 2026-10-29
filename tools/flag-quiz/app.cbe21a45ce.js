@@ -42,7 +42,7 @@ function finish(reason='giveup'){
  $('result-label').textContent=reason==='complete'?'ALL FLAGS CORRECT':reason==='timeout'?"TIME’S UP":'ROUND ENDED';
  $('result-title').textContent=`${correct.size} / ${countries.length} correct`;
  const unattempted=countries.filter(c=>!seen.has(c.code)).length;
- $('summary').textContent=`Time used: ${formatTime(seconds)} ${duration?`of ${formatTime(duration)}`:"(untimed)"} · ${order.length} remaining · ${unattempted} not reached`;
+ $('summary').textContent=`Time used: ${formatTime(seconds)} ${duration?`of ${formatTime(duration)}`:"(free play)"} · ${order.length} remaining · ${unattempted} not reached`;
  const missed=countries.filter(c=>!correct.has(c.code));
  $('missed-title').textContent=missed.length?`Countries you missed (${missed.length})`:'A perfect trip around the world!';
  $('missed').replaceChildren();
