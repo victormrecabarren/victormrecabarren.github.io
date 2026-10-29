@@ -11,14 +11,34 @@ const $ = id=>document.getElementById(id);
 let order=[],position=0,correct=new Set(),skipped=new Set(),started=0,ticker,solved=false,active=false;
 const elapsed=()=>Math.max(0,Math.floor((performance.now()-started)/1000));
 const formatTime=seconds=>`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
-function showScreen(id){for(const screen of ['welcome','game','results']) $(screen).hidden=screen!==id;}
+function showScreen(id){document.body.classList.toggle('playing',id==='game');updateViewport();for(const screen of ['welcome','game','results']) $(screen).hidden=screen!==id;}
 function shuffle(items){const result=[...items];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
 function start(){clearInterval(ticker);order=shuffle(countries);position=0;correct=new Set();skipped=new Set();solved=false;active=true;started=performance.now();$('clock').textContent='0:00';showScreen('game');ticker=setInterval(()=>$('clock').textContent=formatTime(elapsed()),250);render();}
 function loadFlag(){ $('image-error').hidden=true;$('flag').hidden=false;$('flag').src=`https://flagcdn.com/w640/${order[position].code}.png`; }
-function render(){solved=false;$('progress').textContent=`Flag ${position+1} / ${order.length}`;$('score').textContent=`${correct.size} correct`;$('bar').value=position;$('answer').value='';$('answer').disabled=false;$('check').disabled=false;$('feedback').textContent='';$('feedback').dataset.kind='';$('next').textContent='Skip flag →';loadFlag();$('answer').focus();}
-function next(){if(!solved)skipped.add(order[position].code);position++;if(position===order.length)finish();else render();}
+function render(message=''){solved=false;$('progress').textContent=`Flag ${position+1} / ${order.length}`;$('score').textContent=`${correct.size} correct`;$('bar').value=position;$('answer').value='';$('answer').disabled=false;$('feedback').textContent=message;$('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();$('answer').focus();}
+function next(){if(!active)return;if(!solved)skipped.add(order[position].code);position++;if(position===order.length)finish();else render();}
 function finish(){if(!active)return;const seconds=elapsed();active=false;clearInterval(ticker);showScreen('results');$('result-label').textContent=position===order.length?'ROUND COMPLETE':'ROUND ENDED';$('result-title').textContent=`${correct.size} / ${order.length} correct`;$('summary').textContent=`Your time: ${formatTime(seconds)} · ${skipped.size} skipped · ${order.length-correct.size-skipped.size} not attempted`;
  const missed=order.filter(c=>!correct.has(c.code));$('missed-title').textContent=missed.length?`Countries you missed (${missed.length})`:'A perfect trip around the world!';$('missed').replaceChildren();for(const c of missed){const row=document.createElement('div');row.className='missed-row';const img=document.createElement('img');img.src=`https://flagcdn.com/w80/${c.code}.png`;img.alt=`Flag of ${c.name}`;img.loading='lazy';const name=document.createElement('strong');name.textContent=c.name;const status=document.createElement('span');status.textContent=skipped.has(c.code)?'Skipped':'Not attempted';row.append(img,name,status);$('missed').append(row);}$('again').focus();}
-$('answer-form').addEventListener('submit',event=>{event.preventDefault();if(!active||solved)return;if(accepts(order[position],$('answer').value)){solved=true;correct.add(order[position].code);$('feedback').dataset.kind='correct';$('feedback').textContent=`Correct! ${order[position].name}.`;$('score').textContent=`${correct.size} correct`;$('bar').value=position+1;$('answer').disabled=true;$('check').disabled=true;$('next').textContent=position===order.length-1?'See results →':'Next flag →';if(position===order.length-1){position++;finish();}else $('next').focus();}else{$('feedback').dataset.kind='wrong';$('feedback').textContent='Not quite. Try again, or skip this flag.';$('answer').select();}});
+function checkAnswer(event){
+  if(event?.isComposing || !active || solved || !accepts(order[position],$('answer').value))return;
+  solved=true;
+  const name=order[position].name;
+  correct.add(order[position].code);
+  position++;
+  if(position===order.length)finish();
+  else render(`Correct! ${name}.`);
+}
+$('answer').addEventListener('input',checkAnswer);
+$('answer').addEventListener('compositionend',checkAnswer);
+$('answer-form').addEventListener('submit',event=>{event.preventDefault();checkAnswer();});
+function updateViewport(){
+  const viewport=window.visualViewport;
+  document.documentElement.style.setProperty('--quiz-height',`${viewport?viewport.height:window.innerHeight}px`);
+  document.documentElement.style.setProperty('--quiz-top',`${viewport?viewport.offsetTop:0}px`);
+}
+window.visualViewport?.addEventListener('resize',updateViewport);
+window.visualViewport?.addEventListener('scroll',updateViewport);
+window.addEventListener('resize',updateViewport);
+updateViewport();
 $('flag').addEventListener('error',()=>{$('flag').hidden=true;$('image-error').hidden=false;});
 $('start').addEventListener('click',start);$('again').addEventListener('click',start);$('next').addEventListener('click',next);$('finish').addEventListener('click',finish);$('retry').addEventListener('click',loadFlag);
