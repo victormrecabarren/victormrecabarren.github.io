@@ -29,7 +29,7 @@ function render(message=''){
  seen.add(order[0].code);$('progress').textContent=`${order.length} flags left`;
  $('score').textContent=`${correct.size} / ${countries.length} correct`;$('bar').value=correct.size;
  $('answer').value='';$('answer').disabled=false;$('feedback').textContent=message;
- $('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();$('answer').focus();
+ $('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();if(window.quizVoice?.enabled)window.quizVoice.reset();else $('answer').focus();
 }
 function next(){
  if(!active)return;if(remaining()===0){finish('timeout');return;}
@@ -38,7 +38,7 @@ function next(){
 function finish(reason='giveup'){
  if(!active)return;
  if(remaining()===0)reason='timeout';
- const seconds=elapsed();if($('give-up-dialog').open)$('give-up-dialog').close();active=false;clearInterval(ticker);showScreen('results');
+ const seconds=elapsed();window.quizVoice?.stop();if($('give-up-dialog').open)$('give-up-dialog').close();active=false;clearInterval(ticker);showScreen('results');
  $('result-label').textContent=reason==='complete'?'ALL FLAGS CORRECT':reason==='timeout'?"TIME’S UP":'ROUND ENDED';
  $('result-title').textContent=`${correct.size} / ${countries.length} correct`;
  const unattempted=countries.filter(c=>!seen.has(c.code)).length;
@@ -76,11 +76,11 @@ window.addEventListener('resize',updateViewport);
 updateViewport();
 $('flag').addEventListener('load',()=>{$('flag').hidden=false;});
 $('flag').addEventListener('error',()=>{$('flag').hidden=true;$('image-error').hidden=false;});
-$('start').addEventListener('click',start);$('again').addEventListener('click',()=>{showScreen('welcome');$('duration').focus();});$('next').addEventListener('click',next);$('finish').addEventListener('click',()=>{if(active)$('give-up-dialog').showModal();});$('retry').addEventListener('click',loadFlag);
+$('start').addEventListener('click',start);$('again').addEventListener('click',()=>{showScreen('welcome');$('duration').focus();});$('next').addEventListener('click',next);$('finish').addEventListener('click',()=>{if(active){window.quizVoice?.pause();$('give-up-dialog').showModal();}});$('retry').addEventListener('click',loadFlag);
 
 document.addEventListener('visibilitychange',tick);
 window.addEventListener('pageshow',tick);
 
-$('keep-playing').addEventListener('click',()=>{ $('give-up-dialog').close();if(active)$('answer').focus(); });
+$('keep-playing').addEventListener('click',()=>{ $('give-up-dialog').close();if(active){if(window.quizVoice?.enabled)window.quizVoice.reset();else $('answer').focus();} });
 $('confirm-give-up').addEventListener('click',()=>finish('giveup'));
-$('give-up-dialog').addEventListener('cancel',()=>{if(active)requestAnimationFrame(()=>$('answer').focus());});
+$('give-up-dialog').addEventListener('cancel',()=>{if(active)requestAnimationFrame(()=>{if(window.quizVoice?.enabled)window.quizVoice.reset();else $('answer').focus();});});
