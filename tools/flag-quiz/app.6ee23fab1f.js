@@ -23,23 +23,23 @@ function start(){
  if(![0,300,600,1200,1800].includes(duration))duration=1200;
  order=shuffle(countries);correct=new Set();skipped=new Set();seen=new Set();active=true;
  started=Date.now();deadline=started+duration*1000;
- showScreen('game');tick();ticker=setInterval(tick,250);render();
+ showScreen('game');tick();ticker=setInterval(tick,1000);render();focusAnswer();
 }
 function loadFlag(){ $('image-error').hidden=true;$('flag').hidden=true;$('flag').src=`https://flagcdn.com/w640/${order[0].code}.png`; }
 function render(message=''){
  seen.add(order[0].code);$('progress').textContent=`${order.length} flags left`;
  $('score').textContent=`${correct.size} / ${countries.length} correct`;$('bar').value=correct.size;
  $('answer').value='';$('answer').disabled=false;$('feedback').textContent=message;
- $('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();if(window.quizVoice?.enabled)window.quizVoice.reset();else focusAnswer();
+ $('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();
 }
 function next(){
  if(!active)return;if(remaining()===0){finish('timeout');return;}
- skipped.add(order[0].code);order.push(order.shift());render();
+ skipped.add(order[0].code);order.push(order.shift());render();focusAnswer();
 }
 function finish(reason='giveup'){
  if(!active)return;
  if(remaining()===0)reason='timeout';
- const seconds=elapsed();window.quizVoice?.stop();if($('give-up-dialog').open)$('give-up-dialog').close();active=false;clearInterval(ticker);showScreen('results');
+ const seconds=elapsed();if($('give-up-dialog').open)$('give-up-dialog').close();active=false;clearInterval(ticker);showScreen('results');
  $('result-label').textContent=reason==='complete'?'ALL FLAGS CORRECT':reason==='timeout'?"TIME’S UP":'ROUND ENDED';
  $('result-title').textContent=`${correct.size} / ${countries.length} correct`;
  const unattempted=countries.filter(c=>!seen.has(c.code)).length;
@@ -63,9 +63,17 @@ function checkAnswer(event){
  const country=order.shift();correct.add(country.code);skipped.delete(country.code);
  if(!order.length)finish('complete');else render(`Correct! ${country.name}.`);
 }
-$('answer').addEventListener('input',checkAnswer);
-$('answer').addEventListener('compositionend',checkAnswer);
-$('answer-form').addEventListener('submit',event=>{event.preventDefault();checkAnswer();});
+// Let the native keyboard finish its edit before clearing the field or changing flags.
+let answerTimer=null,composing=false;
+function scheduleAnswer(event){
+ clearTimeout(answerTimer);
+ if(composing||event?.isComposing||!active)return;
+ answerTimer=setTimeout(()=>{answerTimer=null;if(!composing)checkAnswer();},0);
+}
+$('answer').addEventListener('compositionstart',()=>{composing=true;clearTimeout(answerTimer);});
+$('answer').addEventListener('compositionend',()=>{composing=false;scheduleAnswer();});
+$('answer').addEventListener('input',scheduleAnswer);
+$('answer-form').addEventListener('submit',event=>{event.preventDefault();scheduleAnswer();});
 let viewportFrame=null,lastViewportHeight=0;
 function updateViewport(){
  if(viewportFrame!==null)return;
@@ -82,11 +90,11 @@ window.addEventListener('resize',updateViewport);
 updateViewport();
 $('flag').addEventListener('load',()=>{$('flag').hidden=false;});
 $('flag').addEventListener('error',()=>{$('flag').hidden=true;$('image-error').hidden=false;});
-$('start').addEventListener('click',start);$('again').addEventListener('click',()=>{showScreen('welcome');$('duration').focus();});$('next').addEventListener('click',next);$('finish').addEventListener('click',()=>{if(active){window.quizVoice?.pause();$('give-up-dialog').showModal();}});$('retry').addEventListener('click',loadFlag);
+$('start').addEventListener('click',start);$('again').addEventListener('click',()=>{showScreen('welcome');$('duration').focus();});$('next').addEventListener('click',next);$('finish').addEventListener('click',()=>{if(active){$('give-up-dialog').showModal();}});$('retry').addEventListener('click',loadFlag);
 
 document.addEventListener('visibilitychange',tick);
 window.addEventListener('pageshow',tick);
 
-$('keep-playing').addEventListener('click',()=>{ $('give-up-dialog').close();if(active){if(window.quizVoice?.enabled)window.quizVoice.reset();else focusAnswer();} });
+$('keep-playing').addEventListener('click',()=>{ $('give-up-dialog').close();if(active)focusAnswer(); });
 $('confirm-give-up').addEventListener('click',()=>finish('giveup'));
-$('give-up-dialog').addEventListener('cancel',()=>{if(active)requestAnimationFrame(()=>{if(window.quizVoice?.enabled)window.quizVoice.reset();else focusAnswer();});});
+$('give-up-dialog').addEventListener('cancel',()=>{if(active)requestAnimationFrame(focusAnswer);});
