@@ -41,7 +41,9 @@ function finish(reason='giveup'){
  if(remaining()===0)reason='timeout';
  const seconds=elapsed();if($('give-up-dialog').open)$('give-up-dialog').close();active=false;clearInterval(ticker);showScreen('results');
  $('result-label').textContent=reason==='complete'?'ALL FLAGS CORRECT':reason==='timeout'?"TIME’S UP":'ROUND ENDED';
- $('result-title').textContent=`${correct.size} / ${countries.length} correct`;
+ const percentage=Number((correct.size/countries.length*100).toFixed(1));
+ $('result-title').textContent=`${percentage}% correct`;
+ $('result-score').textContent=`${correct.size} out of ${countries.length} countries`;
  const unattempted=countries.filter(c=>!seen.has(c.code)).length;
  $('summary').textContent=`Time used: ${formatTime(seconds)} ${duration?`of ${formatTime(duration)}`:"(free play)"} · ${order.length} remaining · ${unattempted} not reached`;
  const missed=countries.filter(c=>!correct.has(c.code));
