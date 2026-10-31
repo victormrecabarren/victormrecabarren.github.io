@@ -5,7 +5,7 @@
  let enabled=false,recognizer=null,generation=0,restartTimer=null;
  const consumed=new Map(),latest=new Map(),closing=new Set();
  let startupTimer=null,shutdownTimer=null;
- const canListen=()=>enabled&&active&&!document.hidden&&!$('give-up-dialog').open;
+ const canListen=()=>enabled&&active&&!document.hidden&&!$('give-up-dialog').open&&document.activeElement!==$('answer');
  function pause(){
   generation++;clearTimeout(restartTimer);clearTimeout(startupTimer);
   const previous=recognizer;recognizer=null;
@@ -76,10 +76,12 @@
    if(!closing.size)clearTimeout(shutdownTimer);
    if(recognizer===session){recognizer=null;clearTimeout(startupTimer);}
    // An aborted session must finish releasing the microphone before another starts.
-   if((wasClosing||currentGeneration===generation)&&canListen()&&!recognizer&&!closing.size){
+   if(wasClosing&&canListen()&&!recognizer&&!closing.size){
     clearTimeout(restartTimer);
     const nextGeneration=generation;
-    restartTimer=setTimeout(()=>listen(nextGeneration),150);
+    restartTimer=setTimeout(()=>listen(nextGeneration),250);
+   }else if(!wasClosing&&currentGeneration===generation&&enabled&&!recognizer){
+    stop('Listening ended. Tap Speak to continue, or type your answer.');
    }
   };
   try{
@@ -93,7 +95,7 @@
  window.quizVoice={get enabled(){return enabled;},reset,pause,stop};
  if(!Recognition){button.disabled=true;status.textContent='Voice isn’t supported in this browser. Try Safari or Chrome.';return;}
  button.addEventListener('click',()=>{
-  if(enabled){stop();$('answer').focus();return;}
+  if(enabled){stop();focusAnswer();return;}
   if(!active)return;
   enabled=true;button.textContent='■ Voice off';button.setAttribute('aria-pressed','true');
   $('answer').blur();$('answer').value='';pause();listen(generation);

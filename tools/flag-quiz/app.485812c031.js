@@ -14,7 +14,8 @@ let order=[],correct=new Set(),skipped=new Set(),seen=new Set(),started=0,deadli
 const elapsed=()=>Math.min(duration||Infinity,Math.max(0,Math.floor((Date.now()-started)/1000)));
 const remaining=()=>duration?Math.max(0,Math.ceil((deadline-Date.now())/1000)):Infinity;
 const formatTime=seconds=>`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
-function showScreen(id){document.body.classList.toggle('playing',id==='game');updateViewport();for(const screen of ['welcome','game','results']) $(screen).hidden=screen!==id;}
+function focusAnswer(){if(document.activeElement!==$('answer'))$('answer').focus({preventScroll:true});}
+function showScreen(id){if(id==='game')window.scrollTo(0,0);document.body.classList.toggle('playing',id==='game');updateViewport();for(const screen of ['welcome','game','results']) $(screen).hidden=screen!==id;}
 function shuffle(items){const result=[...items];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
 function tick(){if(!active)return;$('clock').textContent=formatTime(duration?remaining():elapsed());if(remaining()===0)finish('timeout');}
 function start(){
@@ -29,7 +30,7 @@ function render(message=''){
  seen.add(order[0].code);$('progress').textContent=`${order.length} flags left`;
  $('score').textContent=`${correct.size} / ${countries.length} correct`;$('bar').value=correct.size;
  $('answer').value='';$('answer').disabled=false;$('feedback').textContent=message;
- $('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();if(window.quizVoice?.enabled)window.quizVoice.reset();else $('answer').focus();
+ $('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();if(window.quizVoice?.enabled)window.quizVoice.reset();else focusAnswer();
 }
 function next(){
  if(!active)return;if(remaining()===0){finish('timeout');return;}
@@ -65,13 +66,18 @@ function checkAnswer(event){
 $('answer').addEventListener('input',checkAnswer);
 $('answer').addEventListener('compositionend',checkAnswer);
 $('answer-form').addEventListener('submit',event=>{event.preventDefault();checkAnswer();});
+let viewportFrame=null,lastViewportHeight=0;
 function updateViewport(){
-  const viewport=window.visualViewport;
-  document.documentElement.style.setProperty('--quiz-height',`${viewport?viewport.height:window.innerHeight}px`);
-  document.documentElement.style.setProperty('--quiz-top',`${viewport?viewport.offsetTop:0}px`);
+ if(viewportFrame!==null)return;
+ viewportFrame=requestAnimationFrame(()=>{
+  viewportFrame=null;
+  const height=Math.round(window.visualViewport?.height||window.innerHeight);
+  if(height===lastViewportHeight)return;
+  lastViewportHeight=height;
+  document.documentElement.style.setProperty('--quiz-height',`${height}px`);
+ });
 }
 window.visualViewport?.addEventListener('resize',updateViewport);
-window.visualViewport?.addEventListener('scroll',updateViewport);
 window.addEventListener('resize',updateViewport);
 updateViewport();
 $('flag').addEventListener('load',()=>{$('flag').hidden=false;});
@@ -81,6 +87,6 @@ $('start').addEventListener('click',start);$('again').addEventListener('click',(
 document.addEventListener('visibilitychange',tick);
 window.addEventListener('pageshow',tick);
 
-$('keep-playing').addEventListener('click',()=>{ $('give-up-dialog').close();if(active){if(window.quizVoice?.enabled)window.quizVoice.reset();else $('answer').focus();} });
+$('keep-playing').addEventListener('click',()=>{ $('give-up-dialog').close();if(active){if(window.quizVoice?.enabled)window.quizVoice.reset();else focusAnswer();} });
 $('confirm-give-up').addEventListener('click',()=>finish('giveup'));
-$('give-up-dialog').addEventListener('cancel',()=>{if(active)requestAnimationFrame(()=>{if(window.quizVoice?.enabled)window.quizVoice.reset();else $('answer').focus();});});
+$('give-up-dialog').addEventListener('cancel',()=>{if(active)requestAnimationFrame(()=>{if(window.quizVoice?.enabled)window.quizVoice.reset();else focusAnswer();});});
