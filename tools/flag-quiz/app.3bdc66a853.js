@@ -9,6 +9,33 @@ const countryNames = {"af":"Afghanistan","al":"Albania","dz":"Algeria","ad":"And
 const countries = codes.map(code=>({code,name:(variants[code]||[countryNames[code]])[0],answers:[countryNames[code],...(variants[code]||[])]}));
 const normalize = s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]/g,'');
 const accepts = (country,answer)=>country.answers.some(name=>normalize(name)===normalize(answer));
+// Search only fixed country names and aliases; never use the current flag to rank hints.
+const suggestionNames=countries.map(country=>({country,names:[...new Set(country.answers.map(normalize))]}));
+function spellingDistance(a,b){
+ const rows=Array.from({length:a.length+1},()=>Array(b.length+1).fill(0));
+ for(let i=0;i<=a.length;i++)rows[i][0]=i;
+ for(let j=0;j<=b.length;j++)rows[0][j]=j;
+ for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++){
+  rows[i][j]=Math.min(rows[i-1][j]+1,rows[i][j-1]+1,rows[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])rows[i][j]=Math.min(rows[i][j],rows[i-2][j-2]+1);
+ }
+ return rows[a.length][b.length];
+}
+function findSuggestions(value){
+ const query=normalize(value);if(query.length<3||query.length>64)return [];
+ const limit=query.length<=4?1:query.length<=8?2:3;
+ return suggestionNames.map(({country,names})=>{
+  let score=Infinity;
+  for(const name of names){
+   if(name===query){score=0;break;}
+   if(name.startsWith(query)){score=Math.min(score,0.5+(name.length-query.length)/100);continue;}
+   if(Math.abs(name.length-query.length)>limit)continue;
+   const distance=spellingDistance(query,name);
+   if(distance<=limit&&distance/Math.max(name.length,query.length)<=0.34)score=Math.min(score,distance);
+  }
+  return {country,score};
+ }).filter(item=>Number.isFinite(item.score)).sort((a,b)=>a.score-b.score||a.country.name.localeCompare(b.country.name)).slice(0,4).map(item=>item.country);
+}
 const $ = id=>document.getElementById(id);
 let order=[],correct=new Set(),skipped=new Set(),seen=new Set(),started=0,deadline=0,duration=1200,ticker,active=false;
 const elapsed=()=>Math.min(duration||Infinity,Math.max(0,Math.floor((Date.now()-started)/1000)));
@@ -29,7 +56,7 @@ function loadFlag(){ $('image-error').hidden=true;$('flag').hidden=true;$('flag'
 function render(message=''){
  seen.add(order[0].code);$('progress').textContent=`${order.length} flags left`;
  $('score').textContent=`${correct.size} / ${countries.length} correct`;$('bar').value=correct.size;
- $('answer').value='';$('answer').disabled=false;$('feedback').textContent=message;
+ hideSuggestions();$('answer').value='';$('answer').disabled=false;$('feedback').textContent=message;
  $('feedback').dataset.kind=message?'correct':'';$('next').textContent='Skip flag →';loadFlag();
 }
 function next(){
@@ -39,7 +66,7 @@ function next(){
 function finish(reason='giveup'){
  if(!active)return;
  if(remaining()===0)reason='timeout';
- const seconds=elapsed();if($('give-up-dialog').open)$('give-up-dialog').close();active=false;clearInterval(ticker);showScreen('results');
+ hideSuggestions();const seconds=elapsed();if($('give-up-dialog').open)$('give-up-dialog').close();active=false;clearInterval(ticker);showScreen('results');
  $('result-label').textContent=reason==='complete'?'ALL FLAGS CORRECT':reason==='timeout'?"TIME’S UP":'ROUND ENDED';
  const percentage=Number((correct.size/countries.length*100).toFixed(1));
  $('result-title').textContent=`${percentage}% correct`;
@@ -70,9 +97,9 @@ let answerTimer=null,composing=false;
 function scheduleAnswer(event){
  clearTimeout(answerTimer);
  if(composing||event?.isComposing||!active)return;
- answerTimer=setTimeout(()=>{answerTimer=null;if(!composing)checkAnswer();},0);
+ answerTimer=setTimeout(()=>{answerTimer=null;if(!composing){checkAnswer();if(active)updateSuggestions();}},0);
 }
-$('answer').addEventListener('compositionstart',()=>{composing=true;clearTimeout(answerTimer);});
+$('answer').addEventListener('compositionstart',()=>{composing=true;clearTimeout(answerTimer);hideSuggestions();});
 $('answer').addEventListener('compositionend',()=>{composing=false;scheduleAnswer();});
 $('answer').addEventListener('input',scheduleAnswer);
 $('answer-form').addEventListener('submit',event=>{event.preventDefault();scheduleAnswer();});
@@ -100,3 +127,33 @@ window.addEventListener('pageshow',tick);
 $('keep-playing').addEventListener('click',()=>{ $('give-up-dialog').close();if(active)focusAnswer(); });
 $('confirm-give-up').addEventListener('click',()=>finish('giveup'));
 $('give-up-dialog').addEventListener('cancel',()=>{if(active)requestAnimationFrame(focusAnswer);});
+
+function hideSuggestions(){ $('country-suggestions').hidden=true;$('country-suggestions').replaceChildren(); }
+function chooseSuggestion(country){
+ if(!active)return;
+ clearTimeout(answerTimer);
+ $('answer').value=country.name;
+ hideSuggestions();
+ if(accepts(order[0],country.name))checkAnswer();
+ else{
+  $('feedback').textContent='Not quite. Try another country, or skip.';
+  $('feedback').dataset.kind='wrong';
+ }
+ focusAnswer();
+}
+function updateSuggestions(){
+ const list=$('country-suggestions');list.replaceChildren();
+ if(!active||composing){list.hidden=true;return;}
+ const matches=findSuggestions($('answer').value);
+ for(const country of matches){
+  const item=document.createElement('li'),button=document.createElement('button');
+  button.type='button';button.textContent=country.name;
+  // Keep the keyboard and text selection stable when choosing a suggestion.
+  button.addEventListener('pointerdown',event=>event.preventDefault());
+  button.addEventListener('click',()=>chooseSuggestion(country));
+  item.append(button);list.append(item);
+ }
+ list.hidden=matches.length===0;
+}
+$('answer').addEventListener('keydown',event=>{if(event.key==='Escape')hideSuggestions();});
+$('answer').addEventListener('blur',()=>{setTimeout(()=>{if(!document.activeElement?.closest('#answer-form'))hideSuggestions();},150);});
