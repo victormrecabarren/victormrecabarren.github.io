@@ -53,7 +53,8 @@ function paceAt(seconds,score,limit,total=countries.length){
 function updatePace(){
  const indicator=$('pace-status');indicator.hidden=!duration;
  if(!duration)return;
- const {target,gap}=paceAt(elapsed(),correct.size,duration);
+ const preciseElapsed=Math.min(duration,Math.max(0,(Date.now()-started)/1000));
+ const {target,gap}=paceAt(preciseElapsed,correct.size,duration);
  const state=gap<0?'behind':gap>0?'ahead':'on';
  const label=gap===0?'On pace':`${Math.abs(gap)} ${Math.abs(gap)===1?'flag':'flags'} ${state} pace`;
  const text=`${label} · target ${target} correct`;
