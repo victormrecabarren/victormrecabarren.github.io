@@ -46,7 +46,22 @@ const formatTime=seconds=>`${Math.floor(seconds/60)}:${String(seconds%60).padSta
 function focusAnswer(){if(document.activeElement!==$('answer'))$('answer').focus({preventScroll:true});}
 function showScreen(id){if(id==='game')window.scrollTo(0,0);document.body.classList.toggle('playing',id==='game');updateViewport();for(const screen of ['welcome','game','results']) $(screen).hidden=screen!==id;}
 function shuffle(items){const result=[...items];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
-function tick(){if(!active)return;if(questionShownAt!==null)$('question-time').textContent=formatQuestionTime(Math.max(0,Date.now()-questionShownAt));$('clock').textContent=formatTime(duration?remaining():elapsed());if(remaining()===0)finish('timeout');}
+function paceAt(seconds,score,limit,total=countries.length){
+ const target=Math.min(total,Math.floor(Math.max(0,seconds)/limit*total));
+ return {target,gap:score-target};
+}
+function updatePace(){
+ const indicator=$('pace-status');indicator.hidden=!duration;
+ if(!duration)return;
+ const {target,gap}=paceAt(elapsed(),correct.size,duration);
+ const state=gap<0?'behind':gap>0?'ahead':'on';
+ const label=gap===0?'On pace':`${Math.abs(gap)} ${Math.abs(gap)===1?'flag':'flags'} ${state} pace`;
+ const text=`${label} · target ${target} correct`;
+ if(indicator.textContent!==text)indicator.textContent=text;
+ indicator.dataset.pace=state;
+ indicator.title='Based on answering all 197 countries at an even pace over your selected time. Only correct answers count.';
+}
+function tick(){if(!active)return;updatePace();if(questionShownAt!==null)$('question-time').textContent=formatQuestionTime(Math.max(0,Date.now()-questionShownAt));$('clock').textContent=formatTime(duration?remaining():elapsed());if(remaining()===0)finish('timeout');}
 function start(){
  clearInterval(ticker);duration=Number($('duration').value)*60;
  if(![0,300,600,1200,1800].includes(duration))duration=1200;
@@ -56,6 +71,7 @@ function start(){
 }
 function loadFlag(){ $('image-error').hidden=true;$('flag').hidden=true;$('flag').src=`https://flagcdn.com/w640/${order[0].code}.png`; }
 function render(message=''){
+ updatePace();
  questionShownAt=null;$('question-time').textContent='Loading…';
  seen.add(order[0].code);$('progress').textContent=`${order.length} flags left`;
  $('score').textContent=`${correct.size} / ${countries.length} correct`;$('bar').value=correct.size;
