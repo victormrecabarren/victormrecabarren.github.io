@@ -38,22 +38,25 @@ function findSuggestions(value){
 }
 const $ = id=>document.getElementById(id);
 let order=[],correct=new Set(),skipped=new Set(),seen=new Set(),started=0,deadline=0,duration=1200,ticker,active=false;
+let questionShownAt=null,previousQuestionTime=null;
+const formatQuestionTime=milliseconds=>`${(milliseconds/1000).toFixed(1)}s`;
 const elapsed=()=>Math.min(duration||Infinity,Math.max(0,Math.floor((Date.now()-started)/1000)));
 const remaining=()=>duration?Math.max(0,Math.ceil((deadline-Date.now())/1000)):Infinity;
 const formatTime=seconds=>`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
 function focusAnswer(){if(document.activeElement!==$('answer'))$('answer').focus({preventScroll:true});}
 function showScreen(id){if(id==='game')window.scrollTo(0,0);document.body.classList.toggle('playing',id==='game');updateViewport();for(const screen of ['welcome','game','results']) $(screen).hidden=screen!==id;}
 function shuffle(items){const result=[...items];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
-function tick(){if(!active)return;$('clock').textContent=formatTime(duration?remaining():elapsed());if(remaining()===0)finish('timeout');}
+function tick(){if(!active)return;if(questionShownAt!==null)$('question-time').textContent=formatQuestionTime(Math.max(0,Date.now()-questionShownAt));$('clock').textContent=formatTime(duration?remaining():elapsed());if(remaining()===0)finish('timeout');}
 function start(){
  clearInterval(ticker);duration=Number($('duration').value)*60;
  if(![0,300,600,1200,1800].includes(duration))duration=1200;
- order=shuffle(countries);correct=new Set();skipped=new Set();seen=new Set();active=true;
+ order=shuffle(countries);correct=new Set();skipped=new Set();seen=new Set();active=true;questionShownAt=null;previousQuestionTime=null;$('previous-time').textContent='—';
  started=Date.now();deadline=started+duration*1000;
- showScreen('game');tick();ticker=setInterval(tick,1000);render();focusAnswer();
+ showScreen('game');tick();ticker=setInterval(tick,250);render();focusAnswer();
 }
 function loadFlag(){ $('image-error').hidden=true;$('flag').hidden=true;$('flag').src=`https://flagcdn.com/w640/${order[0].code}.png`; }
 function render(message=''){
+ questionShownAt=null;$('question-time').textContent='Loading…';
  seen.add(order[0].code);$('progress').textContent=`${order.length} flags left`;
  $('score').textContent=`${correct.size} / ${countries.length} correct`;$('bar').value=correct.size;
  hideSuggestions();$('answer').value='';$('answer').disabled=false;$('feedback').textContent=message;
@@ -89,6 +92,10 @@ function checkAnswer(event){
  if(event?.isComposing || !active)return;
  if(remaining()===0){finish('timeout');return;}
  if(!accepts(order[0],$('answer').value))return;
+ previousQuestionTime=questionShownAt===null?null:Math.max(0,Date.now()-questionShownAt);
+ $('previous-time').textContent=previousQuestionTime===null?'—':formatQuestionTime(previousQuestionTime);
+ if(previousQuestionTime!==null)$('question-time').textContent=formatQuestionTime(previousQuestionTime);
+ questionShownAt=null;
  const country=order.shift();correct.add(country.code);skipped.delete(country.code);
  if(!order.length)finish('complete');else render(`Correct! ${country.name}.`);
 }
@@ -117,7 +124,10 @@ function updateViewport(){
 window.visualViewport?.addEventListener('resize',updateViewport);
 window.addEventListener('resize',updateViewport);
 updateViewport();
-$('flag').addEventListener('load',()=>{$('flag').hidden=false;});
+$('flag').addEventListener('load',()=>{
+ $('flag').hidden=false;
+ if(active&&questionShownAt===null){questionShownAt=Date.now();$('question-time').textContent='0.0s';}
+});
 $('flag').addEventListener('error',()=>{$('flag').hidden=true;$('image-error').hidden=false;});
 $('start').addEventListener('click',start);$('again').addEventListener('click',()=>{showScreen('welcome');$('duration').focus();});$('next').addEventListener('click',next);$('finish').addEventListener('click',()=>{if(active){$('give-up-dialog').showModal();}});$('retry').addEventListener('click',loadFlag);
 
