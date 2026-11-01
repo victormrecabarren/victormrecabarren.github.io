@@ -157,3 +157,9 @@ function updateSuggestions(){
 }
 $('answer').addEventListener('keydown',event=>{if(event.key==='Escape')hideSuggestions();});
 $('answer').addEventListener('blur',()=>{setTimeout(()=>{if(!document.activeElement?.closest('#answer-form'))hideSuggestions();},150);});
+
+$('clear-answer').addEventListener('pointerdown',event=>event.preventDefault());
+$('clear-answer').addEventListener('click',()=>{
+ clearTimeout(answerTimer);composing=false;$('answer').value='';hideSuggestions();
+ $('feedback').textContent='';$('feedback').dataset.kind='';focusAnswer();
+});
